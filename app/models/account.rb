@@ -1,4 +1,4 @@
 class Account < ApplicationRecord
-  belongs_to :User
-end
+  belongs_to :user
 
+end
