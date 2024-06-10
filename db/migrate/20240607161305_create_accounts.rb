@@ -4,7 +4,7 @@ class CreateAccounts < ActiveRecord::Migration[7.1]
       t.references :user, null: false, foreign_key: true
       t.string :name, null: false
       t.string :account_number
-      t.integer :type, null: false
+      t.belongs_to :type, null: false
       t.string :currency, null: false
       t.string :color
 
@@ -12,4 +12,3 @@ class CreateAccounts < ActiveRecord::Migration[7.1]
     end
   end
 end
-
