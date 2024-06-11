@@ -1,4 +1,4 @@
 module Categories
-class Expense < Category
-end
+  class Expense < Category
+  end
 end

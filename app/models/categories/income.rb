@@ -1,4 +1,4 @@
 module Categories
-class Income < Category
-end
+  class Income < Category
+  end
 end

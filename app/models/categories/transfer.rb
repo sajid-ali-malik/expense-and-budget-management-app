@@ -1,4 +1,4 @@
 module Categories
-class Transfer < Category
-end
+  class Transfer < Category
+  end
 end
