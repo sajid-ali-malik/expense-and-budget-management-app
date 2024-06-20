@@ -14,12 +14,12 @@
     <% @accounts.each do |account| %>
       <tr>
         <td><%= account.name %></td>
-        <td><%= account.type %></td>
+        <td><%= account.account_type %></td>
         <td><%= account.currency %></td>
         <td>
           <%= link_to 'Show', account_path(account) %>
           <%= link_to 'Edit', edit_account_path(account), method: :patch %>
-          <%= link_to 'Delete', account_path(account), method: :delete %>
+          <%= button_to 'Delete', account_path(account), method: :delete, data: { confirm: 'Are you sure?' } %>
         </td>
       </tr>
     <% end %>

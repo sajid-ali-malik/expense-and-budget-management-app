@@ -9,47 +9,34 @@ class AccountsController < ApplicationController
   def show
   end
 
-   def new
-    @account = current_user.accounts.build(type: params[:type])
+  def new
+    @account = current_user.accounts.new
   end
-
 
   def create
     @account = current_user.accounts.build(account_params)
     if @account.save
-      redirect_to accounts_path, notice: 'created'
+      redirect_to accounts_path, notice: 'Account was successfully created.'
     else
       render :new
     end
   end
 
   def edit
-      @account = current_user.accounts.find(params[:id])
   end
 
-  # def update
-  #   if @account.update(account_params)
-  #     redirect_to accounts_path, notice: ' updated'
-  #   else
-  #     render :edit
-  #   end
-  # end
-
   def update
-    @account = current_user.accounts.find(params[:id])
-
-    if @article.update(article_params)
-      redirect_to @accounts_path, noice: "updated"
+    if @account.update(account_params)
+      redirect_to accounts_path, notice: 'Account was successfully updated.'
     else
-      render :edit, status: :unprocessable_entity
+      render :edit
     end
   end
 
-  def destroy
-    @account = current_user.accounts.find(params[:id])
-    @account.destroy
-    redirect_to accounts_path, notice: 'Deleted.'
-  end
+def destroy
+  @account.destroy
+  redirect_to accounts_path, notice: 'Account was successfully deleted.'
+end
 
   private
 
@@ -58,6 +45,6 @@ class AccountsController < ApplicationController
   end
 
   def account_params
-    params.require(:account).permit(:name, :account_number, :type, :currency, :color)
+    params.require(:account).permit(:name, :account_number, :account_type, :currency, :color)
   end
 end

@@ -1,42 +1,41 @@
-<%= form_with(model: account, local: true, url: accounts_path(@account), method: :patch) do |form| %>
-  <% if account.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(account.errors.count, "error") %> prohibited this account from being saved:</h2>
 
-      <ul>
-        <% account.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+<% if account.errors.any? %>
+  <div>
+    <h2><%= pluralize(account.errors.count, "error") %> prohibited this account from being saved:</h2>
 
-  <div class="form-group">
-    <%= form.label :name %>
-    <%= form.text_field :name%>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :account_number %>
-    <%= form.text_field :account_number%>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :type %>
-<%= form.select :type, options_for_select([['Cash Account', 'Accounts::Cash'], ['Current Account', 'Accounts::Current'], ['Savings Account', 'Accounts::Saving'], ['Investment Account', 'Accounts::Investment'], ['Personal Account', 'Accounts::Personal']]), {} %>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :currency %>
-    <%= form.text_field :currency%>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :color %>
-    <%= form.color_field :color %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
+    <ul>
+      <% account.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
   </div>
 <% end %>
+
+<div>
+  <%= form.label :name %>
+  <%= form.text_field :name%>
+</div>
+
+<div>
+  <%= form.label :account_number %>
+  <%= form.text_field :account_number%>
+</div>
+
+<div>
+  <%= form.label :account_type %>
+<%= form.select :account_type, options_for_select([['Cash Account', 'Accounts::Cash'], ['Current Account', 'Accounts::Current'], ['Savings Account', 'Accounts::Saving'], ['Investment Account', 'Accounts::Investment'], ['Personal Account', 'Accounts::Personal']]), {} %>
+</div>
+
+<div>
+  <%= form.label :currency %>
+  <%= form.text_field :currency%>
+</div>
+
+<div>
+  <%= form.label :color %>
+  <%= form.color_field :color %>
+</div>
+
+<div >
+  <%= form.submit %>
+</div>
