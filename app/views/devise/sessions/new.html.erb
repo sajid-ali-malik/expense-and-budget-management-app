@@ -1,3 +1,7 @@
+
+<div class="container">
+   <h1>Expense and Budget Management App</h1>
+ 
 <h2>Log in</h2>
 
 <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
@@ -12,15 +16,19 @@
   </div>
 
   <% if devise_mapping.rememberable? %>
-    <div class="field">
+    <%# <div class="field"> %>
+      <div style="display:inline">
       <%= f.check_box :remember_me %>
       <%= f.label :remember_me %>
-    </div>
+      </div>
+    <%# </div> %>
   <% end %>
 
   <div class="actions">
     <%= f.submit "Log in" %>
   </div>
 <% end %>
-
+<div class="devise-links">
 <%= render "devise/shared/links" %>
+</div>
+</div>

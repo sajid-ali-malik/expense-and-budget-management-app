@@ -1,0 +1,7 @@
+<h1>Edit Account</h1>
+<%= form_with(model: @account, url: account_path(@account)) do |form| %>
+  <%= render 'form', account: @account, form: form %>
+  
+<% end %>
+
+<%= link_to 'Back', accounts_path %>
