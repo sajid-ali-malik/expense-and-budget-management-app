@@ -3,7 +3,7 @@ class AccountsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_account, only: [:show, :edit, :update, :destroy]
 
-  rescue_from ActiveRecord::RecordNotFound, with: :excep
+  rescue_from ActiveRecord::RecordNotFound, with: :account_not_found
 
   def index
     @accounts = current_user.accounts
@@ -47,7 +47,7 @@ private
     @account = current_user.accounts.find(params[:id])
   end
 
-  def excep
+  def account_not_found
     flash[:alert] = 'The account you were looking for could not be found.'
     redirect_to accounts_path
   end
