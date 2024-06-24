@@ -1,5 +1,75 @@
-<h1>Welcome to Expense & Budget Management App</h1>
- <p>
-      Signed in as <%= current_user.name %>.
-      <%= button_to 'Logout', destroy_user_session_path, method: :delete %>
-</p>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Expense & Budget Management App</title>
+
+<body>
+<div class="content">
+  <div class="column">
+    <h2>My Accounts</h2>
+    <% if @accounts.present? %>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Currency</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @accounts.each do |account| %>
+            <tr>
+              <td><%= account.name %></td>
+              <td><%= account.account_type %></td>
+              <td><%= account.currency %></td>
+              <td>
+                <%= link_to 'Show', account_path(account) %>
+                <%= link_to 'Edit', edit_account_path(account) %>
+                <%= button_to 'Delete', account_path(account), method: :delete, data: { confirm: 'Are you sure?' } %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No accounts available.</p>
+    <% end %>
+  </div>
+  
+  <div class="column">
+    <h2>My Budgets</h2>
+    <% if @budgets.present? %>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Period</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @budgets.each do |budget| %>
+            <tr>
+              <td><%= budget.name %></td>
+              <td><%= budget.amount %></td>
+              <td><%= budget.category %></td>
+              <td><%= budget.period %></td>
+              <td>
+                <%= link_to 'Show', budget_path(budget) %>
+                <%= link_to 'Edit', edit_budget_path(budget) %>
+                <%= button_to 'Delete', budget_path(budget), method: :delete, data: { confirm: 'Are you sure?' } %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No budgets available.</p>
+    <% end %>
+  </div>
+</div>
+</body>
+</html>
