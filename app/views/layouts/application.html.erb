@@ -7,6 +7,7 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+
     <%= javascript_importmap_tags %>
   </head>
 
@@ -14,6 +15,12 @@
        <p class="alert"><%= alert %></p>
 
   <body>
+    <div class="navbar">
+  <p><%= current_user.name %></p>
+  <a href="<%= new_account_path %>">New Account</a>
+  <a href="<%= new_budget_path %>">New Budget</a>
+  <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: "nav-link" %>
+</div>
     <%= yield %>
   </body>
 </html>

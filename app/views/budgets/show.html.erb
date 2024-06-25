@@ -1,0 +1,45 @@
+<h1>Budget Details</h1>
+
+<p>
+  <strong>Name:</strong>
+  <%= @budget.name %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= number_to_currency(@budget.amount) %>
+</p>
+
+<p>
+  <strong>Category:</strong>
+  <%= @budget.category.humanize %>
+</p>
+
+<p>
+  <strong>Period:</strong>
+  <%= @budget.period.humanize %>
+</p>
+
+<p>
+  <strong>Start Date:</strong>
+  <%= @budget.start_date.strftime('%Y-%m-%d %H:%M') %>
+</p>
+
+<p>
+  <strong>End Date:</strong>
+  <%= @budget.end_date.strftime('%Y-%m-%d %H:%M') %>
+</p>
+
+<p>
+  <strong>Created At:</strong>
+  <%= @budget.created_at.strftime('%Y-%m-%d %H:%M') %>
+</p>
+
+<p>
+  <strong>Updated At:</strong>
+  <%= @budget.updated_at.strftime('%Y-%m-%d %H:%M') %>
+</p>
+
+
+<%= link_to 'Edit', edit_budget_path(@budget) %> |
+<%= link_to 'Back', budgets_path %>

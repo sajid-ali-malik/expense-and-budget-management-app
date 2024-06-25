@@ -1,0 +1,31 @@
+<h1>My Budgets</h1>
+<%= link_to 'New Budget', new_budget_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Amount</th>
+      <th>Category</th>
+      <th>Period</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @budgets.each do |budget| %>
+      <tr>
+        <td><%= budget.name %></td>
+        <td><%= budget.amount %></td>
+        <td><%= budget.category %></td>
+        <td><%= budget.period %></td>
+        <td>
+          <%= link_to 'Show', budget_path(budget) %>
+          <%= link_to 'Edit', edit_budget_path(budget) %>
+          <%= button_to 'Delete', budget_path(budget), method: :delete, data: { confirm: 'Are you sure?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Home', root_path%>

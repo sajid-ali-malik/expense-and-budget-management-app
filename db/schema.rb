@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_14_190824) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_24_134626) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -34,21 +34,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_14_190824) do
     t.datetime "end_date", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "category"
+    t.string "period", default: "custom", null: false
     t.index ["user_id"], name: "index_budgets_on_user_id"
-  end
-
-  create_table "budgets_categories", id: false, force: :cascade do |t|
-    t.bigint "budget_id", null: false
-    t.bigint "category_id", null: false
-  end
-
-  create_table "categories", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "icon"
-    t.string "color"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "type"
   end
 
   create_table "labels", force: :cascade do |t|
@@ -59,7 +47,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_14_190824) do
   end
 
   create_table "transactions", force: :cascade do |t|
-    t.bigint "category_id"
     t.decimal "amount", precision: 10, scale: 2, null: false
     t.string "type", null: false
     t.text "description"
@@ -70,7 +57,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_14_190824) do
     t.bigint "source_account_id"
     t.bigint "destination_account_id"
     t.bigint "label_id"
-    t.index ["category_id"], name: "index_transactions_on_category_id"
     t.index ["destination_account_id"], name: "index_transactions_on_destination_account_id"
     t.index ["label_id"], name: "index_transactions_on_label_id"
     t.index ["source_account_id"], name: "index_transactions_on_source_account_id"
@@ -96,6 +82,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_14_190824) do
   add_foreign_key "budgets", "users"
   add_foreign_key "transactions", "accounts", column: "destination_account_id"
   add_foreign_key "transactions", "accounts", column: "source_account_id"
-  add_foreign_key "transactions", "categories"
   add_foreign_key "transactions", "labels"
 end
