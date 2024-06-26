@@ -1,7 +1,7 @@
 class Transaction < ApplicationRecord
-  belongs_to :category
   belongs_to :label
-  belongs_to :account
+  belongs_to :user
 
   validates :amount, presence: true
+  validates :type, presence: true
 end

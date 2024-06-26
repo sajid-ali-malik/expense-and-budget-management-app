@@ -5,5 +5,13 @@ module Transactions
 
     validates :source_account, presence: true
     validates :destination_account, presence: true
+     after_create :transfer_amount_between_accounts
+
+    private
+
+    def transfer_amount_between_accounts
+      source_account.update(balance: source_account.balance - amount)
+      destination_account.update(balance: destination_account.balance + amount)
+    end
   end
 end

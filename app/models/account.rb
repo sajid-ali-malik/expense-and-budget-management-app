@@ -5,5 +5,5 @@ class Account < ApplicationRecord
 
   enum account_type: {cash: 'cash', current: 'current', saving:'saving',investment: 'investment', personal: 'personal'}
 
-  validates :name, :account_type, :currency, presence: true
+  validates :name, :account_type, :currency, :balance, presence: true
 end
