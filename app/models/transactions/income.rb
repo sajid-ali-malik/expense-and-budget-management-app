@@ -6,10 +6,10 @@ module Transactions
 
     after_create :add_amount_to_account
 
-    private
-
-    def add_amount_to_account
-      destination_account.update(balance: destination_account.balance + amount)
+    def account
+      destination_account
     end
-  end
+
+
+end
 end

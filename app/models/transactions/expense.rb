@@ -4,12 +4,10 @@ module Transactions
 
     validates :source_account, presence: true
 
-    after_create :deduct_amount_from_account
-
-    private
-
-    def deduct_amount_from_account
-      source_account.update(balance: source_account.balance - amount)
+    def account
+      source_account
     end
+
+
   end
 end

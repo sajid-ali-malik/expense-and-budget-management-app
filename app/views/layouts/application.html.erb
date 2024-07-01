@@ -16,7 +16,7 @@
 
   <body>
     <div class="navbar">
-  <p><%= current_user %></p>
+  <p><%= current_user&.name%></p>
   <a href="<%= new_account_path %>">New Account</a>
   <a href="<%= new_budget_path %>">New Budget</a>
   <a href="<%= new_transaction_path%>"> New Transaction </a>

@@ -90,11 +90,13 @@
         <tr>
           <td><%= number_to_currency(transaction.amount) %></td>
           <td><%= transaction.type %></td>
-          <td><%= transaction.source_account&.name || transaction.destination_account&.name %></td>
+          <td><%= transaction.account.name %></td>
           <td><%= transaction.created_at.strftime('%Y-%m-%d') %></td>
           <td><%= transaction.description %></td>
           <td>
+            <%= link_to 'Edit', edit_transaction_path(transaction) %>
             <%= button_to 'Delete', transaction_path(transaction), method: :delete, data: { confirm: 'Are you sure?' } %>
+        </td>
           </td>
         </tr>
       <% end %>
