@@ -3,5 +3,6 @@ class HomeController < ApplicationController
   def index
     @accounts = current_user.accounts
     @budgets = current_user.budgets
+    @transactions = current_user.transactions
   end
 end

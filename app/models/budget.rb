@@ -16,11 +16,9 @@ class Budget < ApplicationRecord
     yearly: 'yearly'
   }
 
-  validates :user_id, presence: true
-  validates :name, presence: true
+
   validates :amount, presence: true, numericality: { greater_than: 0 }
-  validates :start_date, presence: true
-  validates :end_date, presence: true
+  validates :user_id, :name, :start_date, :end_date, presence: true
   validate :end_date_after_start_date
 
   private

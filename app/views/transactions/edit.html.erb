@@ -1,0 +1,43 @@
+<h1>Edit Transaction</h1>
+
+<%= form_with model: @transaction, url: transaction_path(@transaction), local: true do |form| %>
+  <div>
+    <%= form.label :type, "Transaction Type" %>
+    <%= form.select :type, options_for_select(['Transactions::Expense', 'Transactions::Income', 'Transactions::Transfer'], @transaction.type), prompt: 'Select Transaction Type' %>
+  </div>
+  
+  <div>
+    <%= form.label :amount %>
+    <%= form.number_field :amount %>
+  </div>
+
+  <% if @transaction.is_a?(Transactions::Transfer) || @transaction.is_a?(Transactions::Expense) %>
+    <div>
+      <%= form.label :source_account_id, "Source Account" %>
+      <%= form.collection_select :source_account_id, @accounts, :id, :name, include_blank: true %>
+    </div>
+  <% end %>
+
+  <% if @transaction.is_a?(Transactions::Transfer) || @transaction.is_a?(Transactions::Income) %>
+    <div>
+      <%= form.label :destination_account_id, "Destination Account" %>
+      <%= form.collection_select :destination_account_id, @accounts, :id, :name, include_blank: true %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :description %>
+    <%= form.text_area :description %>
+  </div>
+
+  <div>
+    <%= form.label :location %>
+    <%= form.text_field :location %>
+  </div>
+
+  <div>
+    <%= form.submit "Update Transaction" %>
+  </div>
+<% end %>
+
+<%= link_to 'Back', transactions_path %>
