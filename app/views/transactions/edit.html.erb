@@ -1,7 +1,6 @@
 <h1>Edit Transaction</h1>
 
 <%= form_with model: @transaction.becomes(Transaction), url: transaction_path(@transaction), local: true do |form| %>
-
   <div>
     <%= form.label :type, "Transaction Type" %>
     <%= form.select :type, options_for_select(['Transactions::Expense', 'Transactions::Income', 'Transactions::Transfer'], @transaction.type), prompt: 'Select Transaction Type' %>
@@ -12,28 +11,28 @@
     <%= form.number_field :amount %>
   </div>
 
-  <% if @transaction.is_a?(Transactions::Transfer) || @transaction.is_a?(Transactions::Expense) %>
-    <div>
-      <%= form.label :source_account_id, "Source Account" %>
-      <%= form.collection_select :source_account_id, @accounts, :id, :name, include_blank: true %>
-    </div>
-  <% end %>
 
-  <% if @transaction.is_a?(Transactions::Transfer) || @transaction.is_a?(Transactions::Income) %>
-    <div>
-      <%= form.label :destination_account_id, "Destination Account" %>
-      <%= form.collection_select :destination_account_id, @accounts, :id, :name, include_blank: true %>
-    </div>
-  <% end %>
+  <div id="expense_fields" style="<%= 'display: block;' if @transaction.is_a?(Transactions::Expense) %>">
+    <%= form.label :source_account_id, "Source Account" %>
+    <%= form.collection_select :source_account_id, @accounts, :id, :name, include_blank: true %>
+  </div>
+
+  <div id="income_fields" style="<%= 'display: block;' if @transaction.is_a?(Transactions::Income) %>">
+    <%= form.label :destination_account_id, "Destination Account" %>
+    <%= form.collection_select :destination_account_id, @accounts, :id, :name, include_blank: true %>
+  </div>
+
+  <div id="transfer_fields" style="<%= 'display: block;' if @transaction.is_a?(Transactions::Transfer) %>">
+    <%= form.label :source_account_id, "Source Account" %>
+    <%= form.collection_select :source_account_id, @accounts, :id, :name, include_blank: true %>
+
+    <%= form.label :destination_account_id, "Destination Account" %>
+    <%= form.collection_select :destination_account_id, @accounts, :id, :name, include_blank: true %>
+  </div>
 
   <div>
     <%= form.label :description %>
     <%= form.text_area :description %>
-  </div>
-
-  <div>
-    <%= form.label :location %>
-    <%= form.text_field :location %>
   </div>
 
   <div>

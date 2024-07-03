@@ -7,7 +7,5 @@ module Transactions
     def account
       source_account
     end
-
-
   end
 end

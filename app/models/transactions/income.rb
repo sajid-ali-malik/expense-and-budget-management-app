@@ -4,12 +4,9 @@ module Transactions
 
     validates :destination_account, presence: true
 
-    after_create :add_amount_to_account
-
     def account
       destination_account
     end
-
-
 end
 end
+

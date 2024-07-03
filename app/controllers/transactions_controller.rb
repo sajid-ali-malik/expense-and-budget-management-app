@@ -14,15 +14,17 @@ class TransactionsController < ApplicationController
 
   def update
     @transaction = Transaction.find(params[:id])
-    revert_account_updates(@transaction)
 
-    if @transaction.update(transaction_params)
-      update_account_balances(@transaction)
+    ActiveRecord::Base.transaction do
+      revert_account_updates(@transaction)
 
-      redirect_to transactions_path, notice: 'Transaction was successfully updated.'
-    else
-      @accounts = current_user.accounts
-      render :edit, status: :unprocessable_entity
+      if @transaction.update(transaction_params)
+        handle_account_updates(@transaction)
+        redirect_to transactions_path, notice: 'Transaction was successfully updated.'
+      else
+        @accounts = current_user.accounts
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
 
@@ -34,18 +36,20 @@ class TransactionsController < ApplicationController
 
   def create
     transaction_type = transaction_type_param
-      @transaction = current_user.transactions.new(transaction_params.except(:type))
-      @transaction.type = transaction_type
+    @transaction = current_user.transactions.new(transaction_params.except(:type))
+    @transaction.type = transaction_type
 
-      ActiveRecord::Base.transaction do
-        if @transaction.save
-          handle_account_updates(@transaction)
-          redirect_to transactions_path, notice: 'Transaction was successfully created.'
-        else
-          @accounts = current_user.accounts
-          @labels = Label.all
-          render :new, status: :unprocessable_entity
-      end
+    if @transaction.save
+      debugger
+      handle_account_updates(Transaction.find(@transaction.id))
+      redirect_to transactions_path, notice: 'Transaction was successfully created.'
+    else
+      @accounts = current_user.accounts
+      @labels = Label.all
+      render :new, status: :unprocessable_entity
+    end
+    ActiveRecord::Base.transaction do
+
     end
   end
 
@@ -56,7 +60,6 @@ class TransactionsController < ApplicationController
       redirect_to transactions_path, notice: 'Transaction was successfully deleted.'
     end
   end
-
 
   private
 
@@ -73,35 +76,36 @@ class TransactionsController < ApplicationController
   end
 
   def handle_account_updates(transaction)
+    Rails.logger.debug "Handling account updates for transaction ID: #{transaction.id} Transaction_type: #{transaction.type}"
     if transaction.is_a?(Transactions::Transfer)
-      transaction.source_account.update!(balance: transaction.source_account.balance - transaction.amount)
-      transaction.destination_account.update!(balance: transaction.destination_account.balance + transaction.amount)
+      update_account_balance(transaction.source_account, -transaction.amount)
+      update_account_balance(transaction.destination_account, +transaction.amount)
     elsif transaction.is_a?(Transactions::Income)
-      transaction.destination_account.update!(balance: transaction.destination_account.balance + transaction.amount)
+      update_account_balance(transaction.destination_account, +transaction.amount)
     elsif transaction.is_a?(Transactions::Expense)
-      transaction.source_account.update!(balance: transaction.source_account.balance - transaction.amount)
+      update_account_balance(transaction.source_account, -transaction.amount)
     end
   end
 
   def revert_account_updates(transaction)
+    Rails.logger.debug "Reverting account updates for transaction ID: #{transaction.id} Transaction_type: #{transaction.type}"
+
     if transaction.is_a?(Transactions::Transfer)
-      transaction.source_account.update!(balance: transaction.source_account.balance + transaction.amount)
-      transaction.destination_account.update!(balance: transaction.destination_account.balance - transaction.amount)
+      update_account_balance(transaction.source_account, +transaction.amount)
+      update_account_balance(transaction.destination_account, -transaction.amount)
     elsif transaction.is_a?(Transactions::Income)
-      transaction.destination_account.update!(balance: transaction.destination_account.balance - transaction.amount)
+      update_account_balance(transaction.destination_account, -transaction.amount)
     elsif transaction.is_a?(Transactions::Expense)
-      transaction.source_account.update!(balance: transaction.source_account.balance + transaction.amount)
+      update_account_balance(transaction.source_account, +transaction.amount)
     end
   end
 
-  def update_account_balances(transaction)
-    if transaction.is_a?(Transactions::Transfer)
-      transaction.source_account.update!(balance: transaction.source_account.balance - transaction.amount)
-      transaction.destination_account.update!(balance: transaction.destination_account.balance + transaction.amount)
-    elsif transaction.is_a?(Transactions::Income)
-      transaction.destination_account.update!(balance: transaction.destination_account.balance + transaction.amount)
-    elsif transaction.is_a?(Transactions::Expense)
-      transaction.source_account.update!(balance: transaction.source_account.balance - transaction.amount)
-    end
+  def update_account_balance(account, amount)
+    # return unless account
+
+    new_balance = account.balance + amount
+    account.update!(balance: new_balance)
+
   end
+
 end
