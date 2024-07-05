@@ -1,0 +1,54 @@
+<h1>Transactions</h1>
+
+<%= link_to 'New Transaction', new_transaction_path, class: 'btn btn-primary' %>
+<h2><%=current_user.name%>'s Transactions </h2>
+
+<table class="table table-striped mt-4">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Amount</th>
+      <th>Source Account</th>
+      <th>Destination Account</th>
+      <th>Description</th>
+      <th>Location</th>
+      <th>Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @transactions.each do |transaction| %>
+      <tr>
+        <td><%= transaction.type.demodulize %></td>
+        <td><%= number_to_currency(transaction.amount) %></td>
+        <td>
+          <% if transaction.is_a?(Transactions::Expense) || transaction.is_a?(Transactions::Transfer) %>
+          <%= transaction.source_account&.name %>
+          <% else %>
+          <%= '-' %>
+          <% end %>
+        </td>
+        <td>
+          <% if transaction.is_a?(Transactions::Income) || transaction.is_a?(Transactions::Transfer) %>
+          <%= transaction.destination_account&.name %>
+          <% else %>
+          <%= '-' %>
+          <% end %>
+        </td>
+
+        <td><%= transaction.description %></td>
+        <td><%= transaction.location %></td>
+        <td><%= l(transaction.created_at, format: :short) %></td>
+        <td>
+          <%= link_to 'Show', transaction_path(transaction)%>
+          <%= link_to 'Edit', edit_transaction_path(transaction) %>
+          <%= button_to 'Delete', transaction_path(transaction), method: :delete, data: { confirm: 'Are you sure?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @transactions %> 
+
+<%= link_to "Home", root_path%>

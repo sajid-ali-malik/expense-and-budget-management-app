@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_24_134626) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_03_114826) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,6 +23,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_134626) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "account_type"
+    t.integer "balance", default: 0, null: false
     t.index ["user_id"], name: "index_accounts_on_user_id"
   end
 
@@ -47,7 +48,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_134626) do
   end
 
   create_table "transactions", force: :cascade do |t|
-    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.integer "amount", null: false
     t.string "type", null: false
     t.text "description"
     t.string "attachments"
@@ -57,6 +58,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_134626) do
     t.bigint "source_account_id"
     t.bigint "destination_account_id"
     t.bigint "label_id"
+    t.bigint "user_id"
     t.index ["destination_account_id"], name: "index_transactions_on_destination_account_id"
     t.index ["label_id"], name: "index_transactions_on_label_id"
     t.index ["source_account_id"], name: "index_transactions_on_source_account_id"

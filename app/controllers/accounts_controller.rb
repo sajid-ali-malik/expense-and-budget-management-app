@@ -53,6 +53,6 @@ private
   end
 
   def account_params
-    params.require(:account).permit(:name, :account_number, :account_type, :currency, :color)
+    params.require(:account).permit(:name, :account_number, :account_type, :currency, :color, :balance)
   end
 end
