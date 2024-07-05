@@ -24,18 +24,8 @@
   </div>
 
   <div class="field">
-    <%= form.label :start_date %>
-    <%= form.datetime_select :start_date %>
-  </div>
-
-  <div class="field">
-    <%= form.label :end_date %>
-    <%= form.datetime_select :end_date %>
-  </div>
-
-  <div class="field">
-    <%= form.label :category %>
-    <%= form.select :category, options_for_select(Budget.categories.keys.map { |c| [c.humanize, c] }, @budget.category) %>
+    <%= form.label :category_id, "Category" %>
+    <%= form.collection_select :category_id, @categories, :id, :name %>
   </div>
 
   <div class="field">

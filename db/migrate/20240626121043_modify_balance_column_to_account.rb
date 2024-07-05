@@ -3,3 +3,4 @@ class ModifyBalanceColumnToAccount < ActiveRecord::Migration[7.1]
     change_column :accounts, :balance, :integer, null: false
   end
 end
+

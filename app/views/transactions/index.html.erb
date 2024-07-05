@@ -2,7 +2,8 @@
 
 <%= link_to 'New Transaction', new_transaction_path, class: 'btn btn-primary' %>
 <h2><%=current_user.name%>'s Transactions </h2>
-
+  <%= link_to "Sort by Newest", transactions_path(sort: 'desc') %> 
+  <%= link_to "Sort by Oldest", transactions_path(sort: 'asc') %>
 <table class="table table-striped mt-4">
   <thead>
     <tr>

@@ -22,6 +22,11 @@
   </div>
 
   <div>
+    <%= form.label :category_id, "Category" %>
+    <%= form.collection_select :category_id, @categories, :id, :name %>
+  </div>  
+  
+  <div>
     <%= form.label :description %>
     <%= form.text_area :description %>
   </div>
