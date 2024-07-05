@@ -5,5 +5,11 @@ module Transactions
 
     validates :source_account, presence: true
     validates :destination_account, presence: true
+
+
+    def account
+      source_account
+    end
+
   end
 end

@@ -1,0 +1,46 @@
+<p>
+  <strong>Transaction Type</strong>
+  <%= @transaction.type.demodulize%>
+</p>
+
+<p>
+  <strong>Amount</strong>
+  <%= @transaction.amount %>
+</p>
+
+<p>
+  <strong>Source Account</strong>
+    <% if @transaction.is_a?(Transactions::Expense) || @transaction.is_a?(Transactions::Transfer) %>
+    <%= @transaction.source_account&.name %>
+    <% else %>
+    <%= '-' %>
+    <% end %>
+</p>
+
+<p>
+  <strong>Destionation Account</strong>
+  <% if @transaction.is_a?(Transactions::Income) || @transaction.is_a?(Transactions::Transfer) %>
+  <%= @transaction.destination_account&.name%>
+  <% else %>
+  <%= '-' %>
+  <% end %>
+</p>
+
+<p>
+  <strong>Description</strong>
+  <%= @transaction.description%>
+</p>
+
+<p>
+  <strong>Location</strong>
+  <%= @transaction.location%>
+</p>
+
+<p>
+  <strong>Date</strong>
+  <%= l(@transaction.created_at, format: :short)%>
+</p>
+
+
+<%= link_to 'Edit', edit_transaction_path(@transaction)%>
+<%= link_to 'Back', transactions_path %>
