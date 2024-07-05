@@ -12,7 +12,7 @@
 
 <p>
   <strong>Category:</strong>
-  <%= @budget.category.humanize %>
+  <%= @budget.category&.name %>
 </p>
 
 <p>
@@ -21,23 +21,8 @@
 </p>
 
 <p>
-  <strong>Start Date:</strong>
-  <%= @budget.start_date.strftime('%Y-%m-%d %H:%M') %>
-</p>
-
-<p>
-  <strong>End Date:</strong>
-  <%= @budget.end_date.strftime('%Y-%m-%d %H:%M') %>
-</p>
-
-<p>
   <strong>Created At:</strong>
   <%= @budget.created_at.strftime('%Y-%m-%d %H:%M') %>
-</p>
-
-<p>
-  <strong>Updated At:</strong>
-  <%= @budget.updated_at.strftime('%Y-%m-%d %H:%M') %>
 </p>
 
 

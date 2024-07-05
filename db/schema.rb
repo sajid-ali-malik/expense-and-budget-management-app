@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< Updated upstream
 ActiveRecord::Schema[7.1].define(version: 2024_06_24_134626) do
+=======
+ActiveRecord::Schema[7.1].define(version: 2024_07_05_113001) do
+>>>>>>> Stashed changes
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -29,14 +33,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_134626) do
   create_table "budgets", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name", null: false
-    t.decimal "amount", precision: 10, scale: 2, null: false
-    t.datetime "start_date", null: false
-    t.datetime "end_date", null: false
+    t.integer "amount", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "category"
     t.string "period", default: "custom", null: false
+    t.bigint "category_id"
     t.index ["user_id"], name: "index_budgets_on_user_id"
+  end
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "labels", force: :cascade do |t|
@@ -57,6 +65,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_134626) do
     t.bigint "source_account_id"
     t.bigint "destination_account_id"
     t.bigint "label_id"
+<<<<<<< Updated upstream
+=======
+    t.bigint "user_id"
+    t.bigint "category_id"
+>>>>>>> Stashed changes
     t.index ["destination_account_id"], name: "index_transactions_on_destination_account_id"
     t.index ["label_id"], name: "index_transactions_on_label_id"
     t.index ["source_account_id"], name: "index_transactions_on_source_account_id"

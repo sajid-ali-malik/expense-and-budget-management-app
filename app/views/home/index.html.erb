@@ -55,7 +55,7 @@
             <tr>
               <td><%= budget.name %></td>
               <td><%= budget.amount %></td>
-              <td><%= budget.category %></td>
+              <td><%= budget.category&.name %></td>
               <td><%= budget.period %></td>
               <td>
                 <%= link_to 'Show', budget_path(budget) %>
@@ -66,6 +66,12 @@
           <% end %>
         </tbody>
       </table>
+<<<<<<< Updated upstream
+=======
+    
+      <%= link_to "See All Budgets", budgets_path %>
+
+>>>>>>> Stashed changes
     <% else %>
       <p>No budgets available.</p>
     <% end %>
