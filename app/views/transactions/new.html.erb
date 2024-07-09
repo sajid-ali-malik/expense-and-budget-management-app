@@ -8,7 +8,7 @@
   
   <div>
     <%= form.label :amount %>
-    <%= form.number_field :amount %>
+    <%= form.number_field :amount, min: 0, required: true %>
   </div>
 
   <div>
@@ -23,7 +23,7 @@
 
   <div>
     <%= form.label :category_id, "Category" %>
-    <%= form.collection_select :category_id, @categories, :id, :name %>
+    <%= form.collection_select :category_id, @categories, :id, :name, include_blank: true %>
   </div>  
   
   <div>
@@ -34,11 +34,6 @@
   <div>
     <%= form.label :location %>
     <%= form.text_field :location %>
-  </div>
-
-  <div>
-    <%= form.label :label_id, "Label" %>
-    <%= form.collection_select :label_id, @labels, :id, :name, include_blank: true %>
   </div>
 
   <div>

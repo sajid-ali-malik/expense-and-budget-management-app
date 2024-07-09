@@ -1,7 +1,8 @@
-class AccountsController < ApplicationController
+# frozen_string_literal: true
 
+class AccountsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_account, only: [:show, :edit, :update, :destroy]
+  before_action :set_account, only: %i[show edit update destroy]
 
   rescue_from ActiveRecord::RecordNotFound, with: :account_not_found
 
@@ -9,8 +10,7 @@ class AccountsController < ApplicationController
     @accounts = current_user.accounts
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @account = current_user.accounts.new
@@ -25,8 +25,7 @@ class AccountsController < ApplicationController
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @account.update(account_params)
@@ -41,7 +40,7 @@ class AccountsController < ApplicationController
     redirect_to root_path, notice: 'Account was successfully deleted.'
   end
 
-private
+  private
 
   def set_account
     @account = current_user.accounts.find(params[:id])
@@ -53,6 +52,6 @@ private
   end
 
   def account_params
-    params.require(:account).permit(:name, :account_number, :account_type, :currency, :color, :balance)
+    params.require(:account).permit(:name, :account_number, :account_type, :balance)
   end
 end

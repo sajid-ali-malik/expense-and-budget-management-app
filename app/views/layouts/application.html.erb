@@ -15,13 +15,17 @@
        <p class="alert"><%= alert %></p>
 
   <body>
-    <div class="navbar">
-  <p><%= current_user&.name%></p>
-  <a href="<%= new_account_path %>">New Account</a>
-  <a href="<%= new_budget_path %>">New Budget</a>
-  <a href="<%= new_transaction_path %>"> New Transaction </a>
-  <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: "nav-link" %>
-</div>
+ 
+    <% if user_signed_in? %>
+      <div class="navbar">
+      <p><%= link_to "#{current_user&.name}", root_path %></p>
+      <a href="<%= new_account_path %>">New Account</a>
+      <a href="<%= new_budget_path %>">New Budget</a>
+      <a href="<%= new_transaction_path %>"> New Transaction </a>
+      <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: "nav-link" %>
+      </div>
+    <%end%>
+
     <%= yield %>
   </body>
 </html>

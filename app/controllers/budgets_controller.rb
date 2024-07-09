@@ -1,17 +1,19 @@
+# frozen_string_literal: true
+
 class BudgetsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_budget, only: [:show, :edit, :update, :destroy]
+  before_action :set_budget, only: %i[show edit update destroy]
 
   def index
     @budgets = current_user.budgets
+    # [TODO] Remove this
     @categories = Category.all
   end
 
-  def show
-  end
+  def show; end
 
   def new
-    @budget = current_user.budgets.build
+    @budget = Budget.new
     @categories = Category.all
   end
 
@@ -44,7 +46,7 @@ class BudgetsController < ApplicationController
   private
 
   def set_budget
-    @budget = current_user.budgets.find(params[:id])
+    @budget = current_user.budgets.find_by(id: params[:id])
   end
 
   def budget_params

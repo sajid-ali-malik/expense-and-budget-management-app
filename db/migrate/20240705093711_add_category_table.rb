@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddCategoryTable < ActiveRecord::Migration[7.1]
   def change
     create_table :categories do |t|
@@ -5,6 +7,5 @@ class AddCategoryTable < ActiveRecord::Migration[7.1]
 
       t.timestamps
     end
-
   end
 end

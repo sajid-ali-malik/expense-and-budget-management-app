@@ -22,14 +22,6 @@
     <%= form.collection_select :destination_account_id, @accounts, :id, :name, include_blank: true %>
   </div>
 
-  <div id="transfer_fields" style="<%= 'display: block;' if @transaction.is_a?(Transactions::Transfer) %>">
-    <%= form.label :source_account_id, "Source Account" %>
-    <%= form.collection_select :source_account_id, @accounts, :id, :name, include_blank: true %>
-
-    <%= form.label :destination_account_id, "Destination Account" %>
-    <%= form.collection_select :destination_account_id, @accounts, :id, :name, include_blank: true %>
-  </div>
-
   <div>
     <%= form.label :description %>
     <%= form.text_area :description %>

@@ -1,10 +1,25 @@
+# frozen_string_literal: true
+
 class TransactionsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_transaction, only: [:edit, :update, :destroy, :show]
+  before_action :set_transaction, only: %i[edit update destroy show]
 
   def index
     @sort_order = params[:sort] || 'desc'
     @transactions = current_user.transactions.order(created_at: @sort_order).page(params[:page]).per(5)
+
+    if params[:source_account_id].present?
+      @transactions = @transactions.where(source_account_id: params[:source_account_id])
+    end
+
+    if params[:destination_account_id].present?
+      @transactions = @transactions.where(destination_account_id: params[:destination_account_id])
+    end
+
+    @transactions = @transactions.where(type: params[:type]) if params[:type].present?
+
+    @transactions = @transactions.page(params[:page]).per(5)
+    @accounts = current_user.accounts
   end
 
   def edit
@@ -20,49 +35,41 @@ class TransactionsController < ApplicationController
     @transaction = Transaction.find(params[:id])
     @categories = Category.all
 
-    ActiveRecord::Base.transaction do
-      revert_account_updates(@transaction)
+    RevertAccountBalance.new(@transaction).call
 
-      if @transaction.update(transaction_params)
-        handle_account_updates(@transaction)
-        redirect_to transactions_path, notice: 'Transaction was successfully updated.'
-      else
-        @accounts = current_user.accounts
-        render :edit, status: :unprocessable_entity
-      end
+    if @transaction.update(transaction_params)
+      UpdateAccountBalance.new(@transaction).call
+      redirect_to transactions_path, notice: 'Transaction was successfully updated.'
+    else
+      @accounts = current_user.accounts
+      render :edit, status: :unprocessable_entity
     end
   end
 
   def new
     @transaction = Transaction.new
     @accounts = current_user.accounts
-    @labels = Label.all
     @categories = Category.all
   end
 
   def create
-    transaction_type = transaction_type_param
-    @transaction = current_user.transactions.new(transaction_params.except(:type))
-    @transaction.type = transaction_type
+    @transaction = current_user.transactions.new(transaction_params)
 
     if @transaction.save
-      handle_account_updates(Transaction.find(@transaction.id))
+      UpdateAccountBalance.new(@transaction).call
       redirect_to transactions_path, notice: 'Transaction was successfully created.'
     else
       @accounts = current_user.accounts
-      @labels = Label.all
+      @categories = Category.all
       render :new, status: :unprocessable_entity
-    end
-    ActiveRecord::Base.transaction do
-
     end
   end
 
   def destroy
     ActiveRecord::Base.transaction do
-      revert_account_updates(@transaction)
+      RevertAccountBalance.new(@transaction).call
       @transaction.destroy
-      redirect_to transactions_path, notice: 'Transaction was successfully deleted.'
+      redirect_to root_path, notice: 'Transaction was successfully deleted.'
     end
   end
 
@@ -73,44 +80,11 @@ class TransactionsController < ApplicationController
   end
 
   def transaction_params
-    params.require(:transaction).permit(:type, :amount, :source_account_id, :destination_account_id, :description, :location, :label_id)
+    params.require(:transaction).permit(:type, :amount, :source_account_id, :destination_account_id, :description,
+                                        :location, :category_id)
   end
 
   def transaction_type_param
     params[:transaction][:type]
   end
-
-  def handle_account_updates(transaction)
-    Rails.logger.debug "Handling account updates for transaction ID: #{transaction.id} Transaction_type: #{transaction.type}"
-    if transaction.is_a?(Transactions::Transfer)
-      update_account_balance(transaction.source_account, -transaction.amount)
-      update_account_balance(transaction.destination_account, +transaction.amount)
-    elsif transaction.is_a?(Transactions::Income)
-      update_account_balance(transaction.destination_account, +transaction.amount)
-    elsif transaction.is_a?(Transactions::Expense)
-      update_account_balance(transaction.source_account, -transaction.amount)
-    end
-  end
-
-  def revert_account_updates(transaction)
-    Rails.logger.debug "Reverting account updates for transaction ID: #{transaction.id} Transaction_type: #{transaction.type}"
-
-    if transaction.is_a?(Transactions::Transfer)
-      update_account_balance(transaction.source_account, +transaction.amount)
-      update_account_balance(transaction.destination_account, -transaction.amount)
-    elsif transaction.is_a?(Transactions::Income)
-      update_account_balance(transaction.destination_account, -transaction.amount)
-    elsif transaction.is_a?(Transactions::Expense)
-      update_account_balance(transaction.source_account, +transaction.amount)
-    end
-  end
-
-  def update_account_balance(account, amount)
-    return unless account
-
-    new_balance = account.balance + amount
-    account.update!(balance: new_balance)
-
-  end
-
 end

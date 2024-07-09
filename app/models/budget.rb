@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Budget < ApplicationRecord
   belongs_to :user
   belongs_to :category
@@ -17,8 +19,6 @@ class Budget < ApplicationRecord
     December: 'December'
   }
 
-
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :user_id, :name, :period, :category_id, presence: true
-
 end

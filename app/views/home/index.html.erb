@@ -12,7 +12,6 @@
           <tr>
             <th>Name</th>
             <th>Type</th>
-            <th>Currency</th>
             <th>Balance</th>
             <th>Actions</th>
           </tr>
@@ -22,7 +21,6 @@
             <tr>
               <td><%= account.name %></td>
               <td><%= account.account_type %></td>
-              <td><%= account.currency %></td>
               <td><%= account.balance %></td>
               <td>
                 <%= link_to 'Show', account_path(account) %>
@@ -46,8 +44,9 @@
         <thead>
           <tr>
             <th>Name</th>
-            <th>Amount</th>
             <th>Category</th>
+            <th>Amount</th>
+            <th>Spent</th>
             <th>Period</th>
             <th>Actions</th>
           </tr>
@@ -56,8 +55,9 @@
           <% @budgets.each do |budget| %>
             <tr>
               <td><%= budget.name %></td>
-              <td><%= budget.amount %></td>
               <td><%= budget.category&.name %></td>
+              <td><%= budget.amount %></td>
+              <td><%= @expenses_by_category[budget.category_id] || 0 %></td>
               <td><%= budget.period %></td>
               <td>
                 <%= link_to 'Show', budget_path(budget) %>
@@ -87,6 +87,7 @@
       <th>Amount</th>
       <th>Source Account</th>
       <th>Destination Account</th>
+      <th>Category</th>
       <th>Description</th>
       <th>Location</th>
       <th>Date</th>
@@ -97,22 +98,30 @@
     <% @transactions.each do |transaction| %>
       <tr>
         <td><%= transaction.type.demodulize %></td>
-        <td><%= number_to_currency(transaction.amount) %></td>
+        <td><%= transaction.amount %></td>
         <td>
           <% if transaction.is_a?(Transactions::Expense) || transaction.is_a?(Transactions::Transfer) %>
-          <%= transaction.source_account&.name %>
+          <%= transaction.source_account&.name || "Null" %>
           <% else %>
           <%= '-' %>
           <% end %>
         </td>
         <td>
           <% if transaction.is_a?(Transactions::Income) || transaction.is_a?(Transactions::Transfer) %>
-          <%= transaction.destination_account&.name %>
+          <%= transaction.destination_account&.name || "Null" %>
           <% else %>
           <%= '-' %>
           <% end %>
         </td>
-
+        <td>
+          
+          <% if transaction.respond_to?(:category) %>
+            <%= transaction.category.name %>
+            <% else %>
+            <span></span>
+          <% end %>
+          
+        </td>
         <td><%= transaction.description %></td>
         <td><%= transaction.location %></td>
         <td><%= l(transaction.created_at, format: :short) %></td>
