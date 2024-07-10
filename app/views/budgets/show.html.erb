@@ -7,7 +7,12 @@
 
 <p>
   <strong>Amount:</strong>
-  <%= number_to_currency(@budget.amount) %>
+  <%= @budget.amount%>
+</p>
+
+<p>
+  <strong>Spent:</strong>
+  <%= @expenses_by_category[[@budget.category_id, @budget.month, @budget.year]] || 0 %>
 </p>
 
 <p>

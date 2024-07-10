@@ -18,7 +18,6 @@ class TransactionsController < ApplicationController
 
     @transactions = @transactions.where(type: params[:type]) if params[:type].present?
 
-    @transactions = @transactions.page(params[:page]).per(5)
     @accounts = current_user.accounts
   end
 
@@ -39,6 +38,7 @@ class TransactionsController < ApplicationController
 
     if @transaction.update(transaction_params)
       UpdateAccountBalance.new(@transaction).call
+      set_month_and_year(@transaction)
       redirect_to transactions_path, notice: 'Transaction was successfully updated.'
     else
       @accounts = current_user.accounts
@@ -54,6 +54,7 @@ class TransactionsController < ApplicationController
 
   def create
     @transaction = current_user.transactions.new(transaction_params)
+    set_month_and_year(@transaction)
 
     if @transaction.save
       UpdateAccountBalance.new(@transaction).call
@@ -86,5 +87,11 @@ class TransactionsController < ApplicationController
 
   def transaction_type_param
     params[:transaction][:type]
+  end
+
+  def set_month_and_year(transaction)
+    now = Time.now
+    transaction.month = now.month
+    transaction.year = now.year
   end
 end

@@ -57,8 +57,8 @@
               <td><%= budget.name %></td>
               <td><%= budget.category&.name %></td>
               <td><%= budget.amount %></td>
-              <td><%= @expenses_by_category[budget.category_id] || 0 %></td>
-              <td><%= budget.period %></td>
+              <td><%= @expenses_by_category[[budget.category_id, budget.month, budget.year]] || 0 %></td>
+              <td><%= budget.month %> / <%= budget.year %></td>
               <td>
                 <%= link_to 'Show', budget_path(budget) %>
                 <%= link_to 'Edit', edit_budget_path(budget) %>

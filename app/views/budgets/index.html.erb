@@ -5,8 +5,9 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Amount</th>
       <th>Category</th>
+      <th>Amount</th>
+      <th>Spent</th>
       <th>Period</th>
       <th>Actions</th>
     </tr>
@@ -15,8 +16,9 @@
     <% @budgets.each do |budget| %>
       <tr>
         <td><%= budget.name %></td>
-        <td><%= budget.amount %></td>
         <td><%= budget.category.name %></td>
+        <td><%= budget.amount %></td>
+        <td><%= @expenses_by_category[[budget.category_id, budget.month, budget.year]] || 0 %>
         <td><%= budget.period %></td>
         <td>
           <%= link_to 'Show', budget_path(budget) %>
