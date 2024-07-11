@@ -5,19 +5,7 @@ class TransactionsController < ApplicationController
   before_action :set_transaction, only: %i[edit update destroy show]
 
   def index
-    @sort_order = params[:sort] || 'desc'
-    @transactions = current_user.transactions.order(created_at: @sort_order).page(params[:page]).per(5)
-
-    if params[:source_account_id].present?
-      @transactions = @transactions.where(source_account_id: params[:source_account_id])
-    end
-
-    if params[:destination_account_id].present?
-      @transactions = @transactions.where(destination_account_id: params[:destination_account_id])
-    end
-
-    @transactions = @transactions.where(type: params[:type]) if params[:type].present?
-
+    @transactions = FetchTransactionsService.new(current_user, params).call
     @accounts = current_user.accounts
   end
 

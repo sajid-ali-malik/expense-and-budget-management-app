@@ -53,8 +53,8 @@ class BudgetsController < ApplicationController
   private
 
   def set_category_id
-    @expenses_by_category = current_user.transactions.where(type: 'Transactions::Expense').group(:category_id, :month,
-                                                                                                 :year).sum(:amount)
+    @total_expenses_by_category_month_and_year = current_user.transactions.where(type: 'Transactions::Expense').group(:category_id, :month,
+                                                                                                                      :year).sum(:amount)
   end
 
   def set_budget
