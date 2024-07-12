@@ -18,8 +18,13 @@
         <td><%= budget.name %></td>
         <td><%= budget.category.name %></td>
         <td><%= budget.amount %></td>
-        <td><%= @total_expenses_by_category_month_and_year[[budget.category_id, budget.month, budget.year]] || 0 %>
-        <td><%= budget.period %></td>
+        <td>
+          <%= current_user.transactions
+                .where(category_id: budget.category_id)
+                .where('EXTRACT(MONTH FROM created_at) = ? AND EXTRACT(YEAR FROM created_at) = ?', budget.budget_month.month, budget.budget_month.year)
+                .sum(:amount) %>
+        </td>
+        <td><%= budget.budget_month.strftime("%B %Y") %></td>
         <td>
           <%= link_to 'Show', budget_path(budget) %>
           <%= link_to 'Edit', edit_budget_path(budget) %>
@@ -29,5 +34,3 @@
     <% end %>
   </tbody>
 </table>
-
-<%= link_to 'Home', root_path%>

@@ -3,7 +3,7 @@
 class BudgetsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_budget, only: %i[show edit update destroy]
-  before_action :set_category_id, only: %i[index show]
+  before_action :set_categories_and_months, only: %i[new create edit update]
 
   rescue_from ActiveRecord::RecordNotFound, with: :budget_not_found
 
@@ -15,31 +15,22 @@ class BudgetsController < ApplicationController
 
   def new
     @budget = Budget.new
-    @categories = Category.all
   end
 
   def create
     @budget = current_user.budgets.build(budget_params)
-    set_month_and_year(@budget)
     if @budget.save
-      redirect_to root_path, notice: 'Budget was successfully created.'
+      redirect_to budgets_path, notice: 'Budget was successfully created.'
     else
       render :new
     end
   end
 
-  def edit
-    @categories = Category.all
-  end
+  def edit; end
 
   def update
     if @budget.update(budget_params)
-      set_month_and_year(@budget)
-      if @budget.save
-        redirect_to @budget, notice: 'Budget was successfully updated.'
-      else
-        render :edit
-      end
+      redirect_to budgets_path, notice: 'Budget was successfully updated.'
     else
       render :edit
     end
@@ -47,15 +38,10 @@ class BudgetsController < ApplicationController
 
   def destroy
     @budget.destroy
-    redirect_to budgets_url, notice: 'Budget was successfully destroyed.'
+    redirect_to budgets_path, notice: 'Budget was successfully destroyed.'
   end
 
   private
-
-  def set_category_id
-    @total_expenses_by_category_month_and_year = current_user.transactions.where(type: 'Transactions::Expense').group(:category_id, :month,
-                                                                                                                      :year).sum(:amount)
-  end
 
   def set_budget
     @budget = current_user.budgets.find(params[:id])
@@ -66,12 +52,11 @@ class BudgetsController < ApplicationController
   end
 
   def budget_params
-    params.require(:budget).permit(:name, :amount, :category_id, :period, :month, :year)
+    params.require(:budget).permit(:name, :amount, :category_id, :budget_month)
   end
 
-  def set_month_and_year(budget)
-    now = Time.now
-    budget.month = now.month
-    budget.year = now.year
+  def set_categories_and_months
+    @categories = Category.all
+    @next_12_months = (0..11).map { |i| Time.now.beginning_of_month + i.months }
   end
 end
