@@ -5,5 +5,5 @@ class Budget < ApplicationRecord
   belongs_to :category
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
-  validates :user_id, :name, :category_id, :budget_month, presence: true
+  validates :name, :budget_month, presence: true
 end

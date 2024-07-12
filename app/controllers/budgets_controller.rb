@@ -1,14 +1,11 @@
-# frozen_string_literal: true
-
 class BudgetsController < ApplicationController
-  before_action :authenticate_user!
   before_action :set_budget, only: %i[show edit update destroy]
   before_action :set_categories_and_months, only: %i[new create edit update]
 
-  rescue_from ActiveRecord::RecordNotFound, with: :budget_not_found
-
   def index
     @budgets = current_user.budgets
+    @budgets = @budgets.by_month(params[:month]) if params[:month].present?
+    @budgets = @budgets.by_category(params[:category_id]) if params[:category_id].present?
   end
 
   def show; end
@@ -45,18 +42,15 @@ class BudgetsController < ApplicationController
 
   def set_budget
     @budget = current_user.budgets.find(params[:id])
-  end
-
-  def budget_not_found
-    redirect_to budgets_url, alert: 'Budget not found.'
+  rescue ActiveRecord::RecordNotFound
+    budget_not_found
   end
 
   def budget_params
     params.require(:budget).permit(:name, :amount, :category_id, :budget_month)
   end
 
-  def set_categories_and_months
-    @categories = Category.all
-    @next_12_months = (0..11).map { |i| Time.now.beginning_of_month + i.months }
+  def budget_not_found
+    redirect_to budgets_url, alert: 'Budget not found.'
   end
 end
