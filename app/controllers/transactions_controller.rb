@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class TransactionsController < ApplicationController
-  before_action :authenticate_user!
   before_action :set_transaction, only: %i[edit update destroy show]
   before_action :set_accounts_and_categories, only: %i[new edit update create show]
 
@@ -57,10 +56,5 @@ class TransactionsController < ApplicationController
   def transaction_params
     params.require(:transaction).permit(:type, :amount, :source_account_id, :destination_account_id, :description,
                                         :location, :category_id)
-  end
-
-  def set_accounts_and_categories
-    @accounts = current_user.accounts
-    @categories = Category.all
   end
 end
