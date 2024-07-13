@@ -3,12 +3,12 @@ class BudgetsController < ApplicationController
   before_action :set_categories_and_months, only: %i[new create edit update]
 
   def index
-    @budgets = current_user.budgets
-    @budgets = @budgets.by_month(params[:month]) if params[:month].present?
-    @budgets = @budgets.by_category(params[:category_id]) if params[:category_id].present?
+    @budgets = policy_scope(Budget)
   end
 
-  def show; end
+  def show
+    authorize @budget
+  end
 
   def new
     @budget = Budget.new
@@ -16,6 +16,7 @@ class BudgetsController < ApplicationController
 
   def create
     @budget = current_user.budgets.build(budget_params)
+
     if @budget.save
       redirect_to budgets_path, notice: 'Budget was successfully created.'
     else
@@ -23,9 +24,13 @@ class BudgetsController < ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+    authorize @budget
+  end
 
   def update
+    authorize @budget
+
     if @budget.update(budget_params)
       redirect_to budgets_path, notice: 'Budget was successfully updated.'
     else
@@ -34,6 +39,8 @@ class BudgetsController < ApplicationController
   end
 
   def destroy
+    authorize @budget
+
     @budget.destroy
     redirect_to budgets_path, notice: 'Budget was successfully destroyed.'
   end
@@ -51,6 +58,12 @@ class BudgetsController < ApplicationController
   end
 
   def budget_not_found
-    redirect_to budgets_url, alert: 'Budget not found.'
+    flash[:alert] = 'The budget you were looking for could not be found.'
+    redirect_to budgets_url
+  end
+
+  def set_categories_and_months
+    @categories = Category.all
+    @next_12_months = (0..11).map { |i| Time.now.beginning_of_month + i.months }
   end
 end
