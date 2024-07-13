@@ -3,7 +3,7 @@ class BudgetsController < ApplicationController
   before_action :set_categories_and_months, only: %i[new create edit update]
 
   def index
-    @budgets = current_user.budgets.includes(:category)
+    @budgets = policy_scope(current_user.budgets.includes(:category))
     @spent_amounts = @budgets.map { |budget| calculate_spent(budget) }
   end
 
