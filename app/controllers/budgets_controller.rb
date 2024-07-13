@@ -17,6 +17,7 @@ class BudgetsController < ApplicationController
 
   def create
     @budget = current_user.budgets.build(budget_params)
+
     if @budget.save
       redirect_to budgets_path, notice: 'Budget was successfully created.'
     elsif @budget.errors[:base].include?('The budget already exists for this category and month. Please edit the existing budget.')
@@ -29,9 +30,13 @@ class BudgetsController < ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+    authorize @budget
+  end
 
   def update
+    authorize @budget
+
     if @budget.update(budget_params)
       redirect_to budgets_path, notice: 'Budget was successfully updated.'
     else
@@ -40,6 +45,8 @@ class BudgetsController < ApplicationController
   end
 
   def destroy
+    authorize @budget
+
     @budget.destroy
     redirect_to budgets_path, notice: 'Budget was successfully destroyed.'
   end

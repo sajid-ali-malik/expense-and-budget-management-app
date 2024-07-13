@@ -1,19 +1,23 @@
-# frozen_string_literal: true
-
 class TransactionsController < ApplicationController
   before_action :set_transaction, only: %i[edit update destroy show]
   before_action :set_accounts_and_categories, only: %i[new edit update create show]
 
   def index
-    @transactions = FetchTransactionsService.new(current_user, params).call
+    @transactions = policy_scope(FetchTransactionsService.new(current_user, params).call)
     @accounts = current_user.accounts
   end
 
-  def edit; end
+  def edit
+    authorize @transaction
+  end
 
-  def show; end
+  def show
+    authorize @transaction
+  end
 
   def update
+    authorize @transaction
+
     RevertAccountBalance.new(@transaction).call
 
     if @transaction.update(transaction_params)
@@ -44,6 +48,8 @@ class TransactionsController < ApplicationController
   end
 
   def destroy
+    authorize @transaction
+
     ActiveRecord::Base.transaction do
       RevertAccountBalance.new(@transaction).call
       @transaction.destroy

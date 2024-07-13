@@ -1,13 +1,13 @@
-# frozen_string_literal: true
-
 class AccountsController < ApplicationController
   before_action :set_account, only: %i[show edit update destroy]
 
   def index
-    @accounts = current_user.accounts
+    @accounts = policy_scope(Account)
   end
 
-  def show; end
+  def show
+    authorize @account
+  end
 
   def new
     @account = current_user.accounts.new
@@ -15,6 +15,7 @@ class AccountsController < ApplicationController
 
   def create
     @account = current_user.accounts.build(account_params)
+
     if @account.save
       redirect_to accounts_path, notice: 'Account was successfully created.'
     else
@@ -22,9 +23,13 @@ class AccountsController < ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+    authorize @account
+  end
 
   def update
+    authorize @account
+
     if @account.update(account_params)
       redirect_to accounts_path, notice: 'Account was successfully updated.'
     else
@@ -33,6 +38,8 @@ class AccountsController < ApplicationController
   end
 
   def destroy
+    authorize @account
+
     @account.destroy
     redirect_to root_path, notice: 'Account was successfully deleted.'
   end
