@@ -12,9 +12,6 @@ class HomeController < ApplicationController
   private
 
   def calculate_spent(budget)
-    current_user.transactions
-                .where(category_id: budget.category_id)
-                .where('EXTRACT(MONTH FROM created_at) = ? AND EXTRACT(YEAR FROM created_at) = ?', budget.budget_month.month, budget.budget_month.year)
-                .sum(:amount)
+    Transaction.by_category_and_month(current_user, budget.category_id, budget.budget_month).sum(:amount)
   end
 end
