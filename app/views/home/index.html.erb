@@ -38,8 +38,8 @@
       <table class="table table-striped mt-4">
         <thead>
           <tr>
-            <th>Name</th>
             <th>Category</th>
+            <th>Notes</th>
             <th>Amount</th>
             <th>Spent</th>
             <th>Period</th>
@@ -47,17 +47,12 @@
           </tr>
         </thead>
         <tbody>
-          <% @budgets.each do |budget| %>
+          <% @budgets.each_with_index do |budget, index| %>
             <tr>
-              <td><%= budget.name %></td>
               <td><%= budget.category&.name %></td>
+              <td><%= budget.notes%></td>
               <td><%= budget.amount %></td>
-              <td>
-                <%= current_user.transactions
-                      .where(category_id: budget.category_id)
-                      .where('EXTRACT(MONTH FROM created_at) = ? AND EXTRACT(YEAR FROM created_at) = ?', budget.budget_month.month, budget.budget_month.year)
-                      .sum(:amount) %>
-              </td>
+              <td><%= @spent_amounts[index] %></td>
               <td><%= budget.budget_month.strftime("%B %Y") %></td>
               <td>
                 <%= link_to 'Show', budget_path(budget) %>
@@ -68,7 +63,6 @@
           <% end %>
         </tbody>
       </table>
-
       <%= link_to "See All Budgets", budgets_path %>
     <% else %>
       <p>No budgets available.</p>
@@ -78,7 +72,6 @@
 
 <div class="transactions">
   <h2>My Transactions</h2>
-
   <table class="table table-striped mt-4">
     <thead>
       <tr>
@@ -100,24 +93,24 @@
           <td><%= transaction.amount %></td>
           <td>
             <% if transaction.is_a?(Transactions::Expense) || transaction.is_a?(Transactions::Transfer) %>
-            <%= transaction.source_account&.name || "Null" %>
+              <%= transaction.source_account&.name || "Null" %>
             <% else %>
-            <%= '-' %>
+              <%= '-' %>
             <% end %>
           </td>
           <td>
             <% if transaction.is_a?(Transactions::Income) || transaction.is_a?(Transactions::Transfer) %>
-            <%= transaction.destination_account&.name || "Null" %>
+              <%= transaction.destination_account&.name || "Null" %>
             <% else %>
-            <%= '-' %>
+              <%= '-' %>
             <% end %>
           </td>
           <td>
-            <% if transaction.respond_to?(:category) %>
-              <%= transaction.category.name %>
-              <% else %>
-              <span></span>
-            <% end %>
+            <%if transaction.is_a?(Transactions::Expense)%>
+                <%= transaction.category.name %>
+            <%else%> 
+                <%= "-" %>
+            <%end%>
           </td>
           <td><%= transaction.description %></td>
           <td><%= transaction.location %></td>
@@ -131,6 +124,5 @@
       <% end %>
     </tbody>
   </table>
-
   <%= link_to "See All Transactions", transactions_path %>
 </div>

@@ -34,6 +34,10 @@ class TransactionsController < ApplicationController
     if @transaction.save
       UpdateAccountBalance.new(@transaction).call
       redirect_to transactions_path, notice: 'Transaction was successfully created.'
+    elsif @transaction.errors[:base].include?('Source account and destination account must be different')
+      redirect_to new_transaction_path,
+                  alert: 'Source account and destination account must be different'
+
     else
       render :new, status: :unprocessable_entity
     end
@@ -56,5 +60,10 @@ class TransactionsController < ApplicationController
   def transaction_params
     params.require(:transaction).permit(:type, :amount, :source_account_id, :destination_account_id, :description,
                                         :location, :category_id)
+  end
+
+  def set_accounts_and_categories
+    @accounts = current_user.accounts
+    @categories = Category.all
   end
 end

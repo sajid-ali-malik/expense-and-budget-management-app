@@ -1,3 +1,15 @@
+<% if alert %>
+  <div>
+    <%= alert %>
+  </div>
+<% end %>
+
+<% if notice %>
+  <div>
+    <%= notice %>
+  </div>
+<% end %>
+
 <%= form_with(model: @budget, local: true) do |form| %>
   <% if @budget.errors.any? %>
     <div id="error_explanation">
@@ -12,11 +24,6 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div class="field">
     <%= form.label :amount %>
     <%= form.number_field :amount %>
   </div>
@@ -24,6 +31,11 @@
   <div class="field">
     <%= form.label :category_id %>
     <%= form.collection_select :category_id, @categories, :id, :name %>
+  </div>
+
+  <div class="field">
+    <%=form.label :notes%>
+    <%= form.text_area :notes%>
   </div>
 
   <div class="field">

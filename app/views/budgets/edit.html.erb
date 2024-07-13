@@ -12,11 +12,6 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div class="field">
     <%= form.label :amount %>
     <%= form.number_field :amount %>
   </div>
@@ -24,6 +19,11 @@
   <div class="field">
     <%= form.label :category_id %>
     <%= form.collection_select :category_id, @categories, :id, :name %>
+  </div>
+
+  <div class="field">
+    <%=form.label :notes%>
+    <%= form.text_area :notes%>
   </div>
 
   <div class="field">

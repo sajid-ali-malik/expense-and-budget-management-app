@@ -1,5 +1,17 @@
 <h1>New Transaction</h1>
 
+<% if alert %>
+  <div>
+    <%= alert %>
+  </div>
+<% end %>
+
+<% if notice %>
+  <div>
+    <%= notice %>
+  </div>
+<% end %>
+
 <%= form_with model: @transaction, local: true, data: { controller: "transaction" } do |form| %>
  <div>
   <label for="transaction_type">Transaction Type</label>
