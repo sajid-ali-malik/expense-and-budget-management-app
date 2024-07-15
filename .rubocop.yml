@@ -1,0 +1,6 @@
+Style/Documentation:
+  Enabled: false
+
+  Exclude:
+    - "db/schema.rb"
+    - "vendor/**/*"

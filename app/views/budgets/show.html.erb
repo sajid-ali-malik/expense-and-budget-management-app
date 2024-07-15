@@ -1,45 +1,34 @@
 <h1>Budget Details</h1>
 
 <p>
-  <strong>Name:</strong>
-  <%= @budget.name %>
+  <strong>Amount:</strong>
+  <%= @budget.amount %>
 </p>
 
 <p>
-  <strong>Amount:</strong>
-  <%= number_to_currency(@budget.amount) %>
+  <strong>Spent:</strong>
+  <%= @spent %>
 </p>
 
 <p>
   <strong>Category:</strong>
-  <%= @budget.category.humanize %>
+  <%= @budget.category&.name %>
+</p>
+
+<p>
+  <strong>Note:</strong>
+  <%=@budget.notes%>
 </p>
 
 <p>
   <strong>Period:</strong>
-  <%= @budget.period.humanize %>
-</p>
-
-<p>
-  <strong>Start Date:</strong>
-  <%= @budget.start_date.strftime('%Y-%m-%d %H:%M') %>
-</p>
-
-<p>
-  <strong>End Date:</strong>
-  <%= @budget.end_date.strftime('%Y-%m-%d %H:%M') %>
+  <%= @budget.budget_month.strftime("%B %Y") %>
 </p>
 
 <p>
   <strong>Created At:</strong>
   <%= @budget.created_at.strftime('%Y-%m-%d %H:%M') %>
 </p>
-
-<p>
-  <strong>Updated At:</strong>
-  <%= @budget.updated_at.strftime('%Y-%m-%d %H:%M') %>
-</p>
-
 
 <%= link_to 'Edit', edit_budget_path(@budget) %> |
 <%= link_to 'Back', budgets_path %>

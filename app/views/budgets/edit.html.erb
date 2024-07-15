@@ -1,22 +1,15 @@
-<h1>Edit Budget</h1>
-
 <%= form_with(model: @budget, local: true) do |form| %>
   <% if @budget.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@budget.errors.count, "error") %> prohibited this budget from being saved:</h2>
+      <h2><%= pluralize(@budget.errors.count, "error") %> prohibited this @budget from being saved:</h2>
 
       <ul>
-        <% @budget.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
+        <% budget.errors.each do |error| %>
+          <li><%= error.full_message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
-
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
 
   <div class="field">
     <%= form.label :amount %>
@@ -24,29 +17,21 @@
   </div>
 
   <div class="field">
-    <%= form.label :start_date %>
-    <%= form.datetime_select :start_date %>
+    <%= form.label :category_id %>
+    <%= form.collection_select :category_id, @categories, :id, :name %>
   </div>
 
   <div class="field">
-    <%= form.label :end_date %>
-    <%= form.datetime_select :end_date %>
+    <%=form.label :notes%>
+    <%= form.text_area :notes%>
   </div>
 
   <div class="field">
-    <%= form.label :category %>
-    <%= form.select :category, options_for_select(Budget.categories.keys.map { |c| [c.humanize, c] }, @budget.category) %>
-  </div>
-
-  <div class="field">
-    <%= form.label :period %>
-    <%= form.select :period, options_for_select(Budget.periods.keys.map { |p| [p.humanize, p] }, @budget.period) %>
+    <%= form.label :budget_month %>
+    <%= form.select :budget_month, options_for_select(@next_12_months.map { |date| [date.strftime("%B %Y"), date] }, selected: @budget.budget_month) %>
   </div>
 
   <div class="actions">
     <%= form.submit %>
   </div>
 <% end %>
-
-<%= link_to 'Show', @budget %>
-<%= link_to 'Back', budgets_path %>

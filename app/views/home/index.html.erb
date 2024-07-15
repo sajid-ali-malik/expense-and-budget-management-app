@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Expense & Budget Management App</title>
-<body>
 <div class="content">
   <div class="column">
     <h2>My Accounts</h2>
@@ -12,7 +7,6 @@
           <tr>
             <th>Name</th>
             <th>Type</th>
-            <th>Currency</th>
             <th>Balance</th>
             <th>Actions</th>
           </tr>
@@ -22,7 +16,6 @@
             <tr>
               <td><%= account.name %></td>
               <td><%= account.account_type %></td>
-              <td><%= account.currency %></td>
               <td><%= account.balance %></td>
               <td>
                 <%= link_to 'Show', account_path(account) %>
@@ -38,27 +31,29 @@
       <p>No accounts available.</p>
     <% end %>
   </div>
-  
+
   <div class="column">
     <h2>My Budgets</h2>
     <% if @budgets.present? %>
       <table class="table table-striped mt-4">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Amount</th>
             <th>Category</th>
+            <th>Notes</th>
+            <th>Amount</th>
+            <th>Spent</th>
             <th>Period</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <% @budgets.each do |budget| %>
+          <% @budgets.each_with_index do |budget, index| %>
             <tr>
-              <td><%= budget.name %></td>
+              <td><%= budget.category&.name %></td>
+              <td><%= budget.notes%></td>
               <td><%= budget.amount %></td>
-              <td><%= budget.category %></td>
-              <td><%= budget.period %></td>
+              <td><%= @spent_amounts[index] %></td>
+              <td><%= budget.budget_month.strftime("%B %Y") %></td>
               <td>
                 <%= link_to 'Show', budget_path(budget) %>
                 <%= link_to 'Edit', edit_budget_path(budget) %>
@@ -68,9 +63,7 @@
           <% end %>
         </tbody>
       </table>
-      <%if @budgets.count > 5 %>
-      <%= link_to "See All Budgets", budgets_path%>
-      <%end%>
+      <%= link_to "See All Budgets", budgets_path %>
     <% else %>
       <p>No budgets available.</p>
     <% end %>
@@ -79,55 +72,57 @@
 
 <div class="transactions">
   <h2>My Transactions</h2>
-  
-<table class="table table-striped mt-4">
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Amount</th>
-      <th>Source Account</th>
-      <th>Destination Account</th>
-      <th>Description</th>
-      <th>Location</th>
-      <th>Date</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @transactions.each do |transaction| %>
+  <table class="table table-striped mt-4">
+    <thead>
       <tr>
-        <td><%= transaction.type.demodulize %></td>
-        <td><%= number_to_currency(transaction.amount) %></td>
-        <td>
-          <% if transaction.is_a?(Transactions::Expense) || transaction.is_a?(Transactions::Transfer) %>
-          <%= transaction.source_account&.name %>
-          <% else %>
-          <%= '-' %>
-          <% end %>
-        </td>
-        <td>
-          <% if transaction.is_a?(Transactions::Income) || transaction.is_a?(Transactions::Transfer) %>
-          <%= transaction.destination_account&.name %>
-          <% else %>
-          <%= '-' %>
-          <% end %>
-        </td>
-
-        <td><%= transaction.description %></td>
-        <td><%= transaction.location %></td>
-        <td><%= l(transaction.created_at, format: :short) %></td>
-        <td>
-          <%= link_to 'Show', transaction_path(transaction)%>
-          <%= link_to 'Edit', edit_transaction_path(transaction) %>
-          <%= button_to 'Delete', transaction_path(transaction), method: :delete, data: { confirm: 'Are you sure?' } %>
-        </td>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>Source Account</th>
+        <th>Destination Account</th>
+        <th>Category</th>
+        <th>Description</th>
+        <th>Location</th>
+        <th>Date</th>
+        <th>Actions</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-
+    </thead>
+    <tbody>
+      <% @transactions.each do |transaction| %>
+        <tr>
+          <td><%= transaction.type.demodulize %></td>
+          <td><%= transaction.amount %></td>
+          <td>
+            <% if transaction.is_a?(Transactions::Expense) || transaction.is_a?(Transactions::Transfer) %>
+              <%= transaction.source_account&.name || "Null" %>
+            <% else %>
+              <%= '-' %>
+            <% end %>
+          </td>
+          <td>
+            <% if transaction.is_a?(Transactions::Income) || transaction.is_a?(Transactions::Transfer) %>
+              <%= transaction.destination_account&.name || "Null" %>
+            <% else %>
+              <%= '-' %>
+            <% end %>
+          </td>
+          <td>
+            <%if transaction.is_a?(Transactions::Expense)%>
+                <%= transaction.category.name %>
+            <%else%> 
+                <%= "-" %>
+            <%end%>
+          </td>
+          <td><%= transaction.description %></td>
+          <td><%= transaction.location %></td>
+          <td><%= l(transaction.created_at, format: :short) %></td>
+          <td>
+            <%= link_to 'Show', transaction_path(transaction) %>
+            <%= link_to 'Edit', edit_transaction_path(transaction) %>
+            <%= button_to 'Delete', transaction_path(transaction), method: :delete, data: { confirm: 'Are you sure?' } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
   <%= link_to "See All Transactions", transactions_path %>
 </div>
-
-</body>
-</html>

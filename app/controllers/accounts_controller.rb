@@ -1,15 +1,15 @@
+# frozen_string_literal: true
+
 class AccountsController < ApplicationController
-
-  before_action :authenticate_user!
-  before_action :set_account, only: [:show, :edit, :update, :destroy]
-
-  rescue_from ActiveRecord::RecordNotFound, with: :account_not_found
+  before_action :set_account, only: %i[show edit update destroy]
 
   def index
-    @accounts = current_user.accounts
+    @accounts = policy_scope(Account)
   end
 
+  # TODO: Display past month's transactions when showing the account.
   def show
+    authorize @account
   end
 
   def new
@@ -18,41 +18,42 @@ class AccountsController < ApplicationController
 
   def create
     @account = current_user.accounts.build(account_params)
+
     if @account.save
       redirect_to accounts_path, notice: 'Account was successfully created.'
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
   def edit
+    authorize @account
   end
 
   def update
+    authorize @account
+
     if @account.update(account_params)
       redirect_to accounts_path, notice: 'Account was successfully updated.'
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
   def destroy
+    authorize @account
+
     @account.destroy
     redirect_to root_path, notice: 'Account was successfully deleted.'
   end
 
-private
+  private
 
   def set_account
     @account = current_user.accounts.find(params[:id])
   end
 
-  def account_not_found
-    flash[:alert] = 'The account you were looking for could not be found.'
-    redirect_to accounts_path
-  end
-
   def account_params
-    params.require(:account).permit(:name, :account_number, :account_type, :currency, :color, :balance)
+    params.require(:account).permit(:name, :account_number, :account_type, :balance)
   end
 end

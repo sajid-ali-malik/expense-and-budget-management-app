@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   devise_for :users
 
@@ -5,11 +7,5 @@ Rails.application.routes.draw do
   resources :budgets
   resources :transactions
 
-  namespace :transactions do
-    resources :expenses, controller: 'expenses', type: 'Transactions::Expense'
-    resources :incomes, controller: 'incomes', type: 'Transactions::Income'
-    resources :transfers, controller: 'transfers', type: 'Transactions::Transfer'
-  end
-
-  root to: "home#index"
+  root to: 'home#index'
 end

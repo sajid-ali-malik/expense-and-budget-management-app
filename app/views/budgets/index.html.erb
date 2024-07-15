@@ -4,20 +4,22 @@
 <table>
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Amount</th>
       <th>Category</th>
+      <th>Note</th>
+      <th>Amount</th>
+      <th>Spent</th>
       <th>Period</th>
       <th>Actions</th>
     </tr>
   </thead>
   <tbody>
-    <% @budgets.each do |budget| %>
+    <% @budgets.each_with_index do |budget, index| %>
       <tr>
-        <td><%= budget.name %></td>
+        <td><%= budget.category.name %></td>
+        <td><%= budget.notes%>
         <td><%= budget.amount %></td>
-        <td><%= budget.category %></td>
-        <td><%= budget.period %></td>
+        <td><%= @spent_amounts[index] %></td>
+        <td><%= budget.budget_month.strftime("%B %Y") %></td>
         <td>
           <%= link_to 'Show', budget_path(budget) %>
           <%= link_to 'Edit', edit_budget_path(budget) %>
@@ -27,5 +29,3 @@
     <% end %>
   </tbody>
 </table>
-
-<%= link_to 'Home', root_path%>

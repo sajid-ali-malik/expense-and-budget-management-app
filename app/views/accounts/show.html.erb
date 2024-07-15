@@ -1,3 +1,5 @@
+<h1> Account </h1>
+
 <p>
   <strong>Name:</strong>
   <%= @account.name %>
@@ -11,16 +13,6 @@
 <p>
   <strong>Type of Account:</strong>
   <%= @account.account_type%>
-</p>
-
-<p>
-  <strong>Currency:</strong>
-  <%= @account.currency %>
-</p>
-
-<p>
-  <strong>Color:</strong>
-  <%= @account.color %>
 </p>
 
 <%= link_to 'Edit', edit_account_path(@account)%>

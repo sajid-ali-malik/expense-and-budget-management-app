@@ -1,26 +1,48 @@
 <h1>New Transaction</h1>
 
-<%= form_with model: @transaction, local: true do |form| %>
-  <div>
-    <%= form.label :type, "Transaction Type" %>
-    <%= form.select :type, options_for_select(['Transactions::Expense', 'Transactions::Income', 'Transactions::Transfer'], @transaction.type), prompt: 'Select Transaction Type' %>
+<%= form_with model: @transaction, local: true, data: { controller: "transaction" } do |form| %>
+  <% if @transaction.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@transaction.errors.count, "error") %> prohibited this transaction from being saved:</h2>
+
+      <ul>
+        <% @transaction.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+ <div>
+  <label for="transaction_type">Transaction Type</label>
+  <select name="transaction[type]" id="transaction_type" data-action="change->transaction#toggleAccountFields" data-transaction-target="transactionType">
+    <option value="">Select Transaction Type</option>
+    <option value="Transactions::Expense">Expense</option>
+    <option value="Transactions::Income">Income</option>
+    <option value="Transactions::Transfer">Transfer</option>
+  </select>
+</div>
+
+  <div data-transaction-target="sourceAccount" style="display:none;">
+    <%= form.label :source_account_id, "Source Account" %>
+    <%= form.collection_select :source_account_id, @accounts, :id, :name, include_blank: true %>
   </div>
-  
+
+  <div data-transaction-target="destinationAccount" style="display:none;">
+    <%= form.label :destination_account_id, "Destination Account" %>
+    <%= form.collection_select :destination_account_id, @accounts, :id, :name, include_blank: true %>
+  </div>
+
   <div>
     <%= form.label :amount %>
     <%= form.number_field :amount %>
   </div>
 
-  <div>
-    <%= form.label :source_account_id, "Source Account" %>
-    <%= form.collection_select :source_account_id, @accounts, :id, :name, include_blank: true %>
-  </div>
-
-  <div>
-    <%= form.label :destination_account_id, "Destination Account" %>
-    <%= form.collection_select :destination_account_id, @accounts, :id, :name, include_blank: true %>
-  </div>
-
+  <div data-transaction-target="category" style="display:none;">
+    <%= form.label :category_id, "Category" %>
+    <%= form.collection_select :category_id, @categories, :id, :name, include_blank: true %>
+  </div>  
+  
   <div>
     <%= form.label :description %>
     <%= form.text_area :description %>
@@ -29,11 +51,6 @@
   <div>
     <%= form.label :location %>
     <%= form.text_field :location %>
-  </div>
-
-  <div>
-    <%= form.label :label_id, "Label" %>
-    <%= form.collection_select :label_id, @labels, :id, :name, include_blank: true %>
   </div>
 
   <div>
