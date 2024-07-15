@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BudgetPolicy < ApplicationPolicy
   attr_reader :user, :budget
 

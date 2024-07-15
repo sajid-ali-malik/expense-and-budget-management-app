@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AccountPolicy
   attr_reader :user, :account
 

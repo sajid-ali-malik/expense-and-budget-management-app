@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FetchTransactionsService
   def initialize(user, params)
     @user = user
