@@ -1,19 +1,16 @@
 # frozen_string_literal: true
 
-class AccountPolicy
-  attr_reader :user, :account
-
-  def initialize(user, account)
-    @user = user
-    @account = account
+class AccountPolicy < ApplicationPolicy
+  def show?
+    user == record.user
   end
 
   def update?
-    user == account.user
+    user == record.user
   end
 
   def destroy?
-    user == account.user
+    user == record.user
   end
 
   class Scope < ApplicationPolicy::Scope

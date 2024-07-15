@@ -10,7 +10,6 @@ class TransactionsController < ApplicationController
   end
 
   def edit
-    authorize @transaction
   end
 
   def show
@@ -20,13 +19,18 @@ class TransactionsController < ApplicationController
   def update
     authorize @transaction
 
-    RevertAccountBalance.new(@transaction).call
+    ActiveRecord::Base.transaction do
+      RevertAccountBalance.new(@transaction).call
 
-    if @transaction.update(transaction_params)
-      UpdateAccountBalance.new(@transaction).call
-      redirect_to transactions_path, notice: 'Transaction was successfully updated.'
-    else
-      render :edit, status: :unprocessable_entity
+      if @transaction.update(transaction_params)
+        UpdateAccountBalance.new(@transaction).call
+        redirect_to transactions_path, notice: 'Transaction was successfully updated.'
+      elsif @transaction.errors[:base].include?('Source account and destination account must be different')
+        redirect_to edit_transaction_path,
+                    alert: 'Source account and destination account must be different'
+      else
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
 
@@ -36,16 +40,17 @@ class TransactionsController < ApplicationController
 
   def create
     @transaction = current_user.transactions.new(transaction_params)
+    ActiveRecord::Base.transaction do
+      if @transaction.save
+        UpdateAccountBalance.new(@transaction).call
+        redirect_to transactions_path, notice: 'Transaction was successfully created.'
+      elsif @transaction.errors[:base].include?('Source account and destination account must be different')
+        redirect_to new_transaction_path,
+                    alert: 'Source account and destination account must be different'
 
-    if @transaction.save
-      UpdateAccountBalance.new(@transaction).call
-      redirect_to transactions_path, notice: 'Transaction was successfully created.'
-    elsif @transaction.errors[:base].include?('Source account and destination account must be different')
-      redirect_to new_transaction_path,
-                  alert: 'Source account and destination account must be different'
-
-    else
-      render :new, status: :unprocessable_entity
+      else
+        render :new, status: :unprocessable_entity
+      end
     end
   end
 

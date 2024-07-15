@@ -5,7 +5,6 @@ module Transactions
     belongs_to :destination_account, class_name: 'Account', foreign_key: 'destination_account_id'
 
     validates :destination_account_id, presence: true
-
     def account
       destination_account
     end

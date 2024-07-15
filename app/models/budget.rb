@@ -11,6 +11,7 @@ class Budget < ApplicationRecord
   private
 
   def unique_budget_per_month
+    # existing_budget = Budget.find_by(category:, budget_month:, user:)
     existing_budget = user.budgets.where(category_id:, budget_month:).where.not(id:).exists?
     return unless existing_budget
 

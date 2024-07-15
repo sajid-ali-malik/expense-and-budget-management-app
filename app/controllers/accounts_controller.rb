@@ -7,6 +7,7 @@ class AccountsController < ApplicationController
     @accounts = policy_scope(Account)
   end
 
+  # TODO: Display past month's transactions when showing the account.
   def show
     authorize @account
   end
@@ -21,7 +22,7 @@ class AccountsController < ApplicationController
     if @account.save
       redirect_to accounts_path, notice: 'Account was successfully created.'
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -35,7 +36,7 @@ class AccountsController < ApplicationController
     if @account.update(account_params)
       redirect_to accounts_path, notice: 'Account was successfully updated.'
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 

@@ -7,8 +7,11 @@ class FetchTransactionsService
     @sort_order = params[:sort] || 'desc'
   end
 
+  # TODO: Refactor, try to reduce it by using where in the call
+  # TODO: ADD filter for category
+
   def call
-    transactions = @user.transactions.order(created_at: @sort_order).page(@params[:page]).per(5)
+    transactions = @user.transactions.order(created_at: @sort_order).page(@params[:page]).per(20)
     transactions = filter_by_source_account(transactions)
     transactions = filter_by_destination_account(transactions)
     filter_by_type(transactions)

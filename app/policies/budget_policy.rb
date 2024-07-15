@@ -1,19 +1,16 @@
 # frozen_string_literal: true
 
 class BudgetPolicy < ApplicationPolicy
-  attr_reader :user, :budget
-
-  def initialize(user, budget)
-    @user = user
-    @budget = budget
+  def show?
+    user == record.user
   end
 
   def update?
-    user == budget.user
+    user == record.user
   end
 
   def destroy?
-    user == budget.user
+    user == record.user
   end
 
   class Scope < ApplicationPolicy::Scope

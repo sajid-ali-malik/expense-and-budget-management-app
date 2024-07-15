@@ -1,6 +1,18 @@
 <h1>Edit Transaction</h1>
 
 <%= form_with model: @transaction.becomes(Transaction), url: transaction_path(@transaction), local: true, method: :patch, data: { controller: "transaction" } do |form| %>
+  <% if @transaction.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@transaction.errors.count, "error") %> prohibited this transaction from being saved:</h2>
+
+      <ul>
+        <% @transaction.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <div>
     <label for="transaction_type">Transaction Type</label>
     <select name="transaction[type]" id="transaction_type" data-action="change->transaction#toggleAccountFields" data-transaction-target="transactionType">

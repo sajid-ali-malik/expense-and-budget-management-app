@@ -1,25 +1,25 @@
 <h1>New Transaction</h1>
 
-<% if alert %>
-  <div>
-    <%= alert %>
-  </div>
-<% end %>
-
-<% if notice %>
-  <div>
-    <%= notice %>
-  </div>
-<% end %>
-
 <%= form_with model: @transaction, local: true, data: { controller: "transaction" } do |form| %>
+  <% if @transaction.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@transaction.errors.count, "error") %> prohibited this transaction from being saved:</h2>
+
+      <ul>
+        <% @transaction.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
  <div>
   <label for="transaction_type">Transaction Type</label>
   <select name="transaction[type]" id="transaction_type" data-action="change->transaction#toggleAccountFields" data-transaction-target="transactionType">
     <option value="">Select Transaction Type</option>
-    <option value="Transactions::Expense" <%= 'selected' if @transaction.type == 'Transactions::Expense' %>>Expense</option>
-    <option value="Transactions::Income" <%= 'selected' if @transaction.type == 'Transactions::Income' %>>Income</option>
-    <option value="Transactions::Transfer" <%= 'selected' if @transaction.type == 'Transactions::Transfer' %>>Transfer</option>
+    <option value="Transactions::Expense">Expense</option>
+    <option value="Transactions::Income">Income</option>
+    <option value="Transactions::Transfer">Transfer</option>
   </select>
 </div>
 
