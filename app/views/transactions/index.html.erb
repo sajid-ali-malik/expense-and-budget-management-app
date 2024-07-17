@@ -1,31 +1,37 @@
-<h1>Transactions</h1> 
+<h1>Transactions</h1>
 
 <%= link_to 'New Transaction', new_transaction_path, class: 'btn btn-primary' %>
-<h2><%=current_user.name%>'s Transactions </h2>
-  <%= link_to "Sort by Newest", transactions_path(sort: 'desc') %> 
-  <%= link_to "Sort by Oldest", transactions_path(sort: 'asc') %>
+<h2><%= current_user.name %>'s Transactions </h2>
 
-  <%= form_with url: transactions_path, method: :get, local: true do |form| %>
-    <div>
-      <%= form.label :source_account_id, "Source Account" %>
-      <%= form.collection_select :source_account_id, @accounts, :id, :name, include_blank: true, selected: params[:source_account_id] %>
-    </div>
+<%= link_to "Sort by Newest", transactions_path(sort: 'desc') %> 
+<%= link_to "Sort by Oldest", transactions_path(sort: 'asc') %>
 
-    <div>
-      <%= form.label :destination_account_id, "Destination Account" %>
-      <%= form.collection_select :destination_account_id, @accounts, :id, :name, include_blank: true, selected: params[:destination_account_id] %>
-    </div>
+<%= form_with url: transactions_path, method: :get, local: true do |form| %>
+  <div>
+    <%= form.label :source_account_id, "Source Account" %>
+    <%= form.collection_select :source_account_id, @accounts, :id, :name, include_blank: true, selected: params[:source_account_id] %>
+  </div>
 
-    <div>
-      <%= form.label :type, "Transaction Type" %>
-      <%= form.select :type, options_for_select(['Transactions::Expense', 'Transactions::Income', 'Transactions::Transfer'], params[:type]), include_blank: true %>
-    </div>
+  <div>
+    <%= form.label :destination_account_id, "Destination Account" %>
+    <%= form.collection_select :destination_account_id, @accounts, :id, :name, include_blank: true, selected: params[:destination_account_id] %>
+  </div>
 
-    <div>
-      <%= form.submit "Filter" %>
-      <%= link_to "Clear Filters", transactions_path, class: "button" %>
-    </div>
-  <% end %>
+  <div>
+    <%= form.label :type, "Transaction Type" %>
+    <%= form.select :type, options_for_select(['Transactions::Expense', 'Transactions::Income', 'Transactions::Transfer'], params[:type]), include_blank: true %>
+  </div>
+
+  <div>
+    <%= form.label :category_id, "Category"%>
+    <%= form.collection_select :category_id, @categories, :id, :name, include_blank: true, selected: params[:category_id] %>
+  </div>
+
+  <div>
+    <%= form.submit "Filter" %>
+    <%= link_to "Clear Filters", transactions_path, class: "button" %>
+  </div>
+<% end %>
 
 <table class="table table-striped mt-4">
   <thead>
@@ -48,30 +54,30 @@
         <td><%= transaction.amount %></td>
         <td>
           <% if transaction.is_a?(Transactions::Expense) || transaction.is_a?(Transactions::Transfer) %>
-          <%= transaction.source_account&.name %>
+            <%= transaction.source_account&.name || '-' %>
           <% else %>
-          <%= '-' %>
+            <%= '-' %>
           <% end %>
         </td>
         <td>
           <% if transaction.is_a?(Transactions::Income) || transaction.is_a?(Transactions::Transfer) %>
-          <%= transaction.destination_account&.name %>
+            <%= transaction.destination_account&.name || '-' %>
           <% else %>
-          <%= '-' %>
+            <%= '-' %>
           <% end %>
         </td>
         <td>
-          <% if transaction.respond_to?(:category) %>
+          <% if transaction.respond_to?(:category) && transaction.category %>
             <%= transaction.category.name %>
-            <% else %>
-            <span></span>
+          <% else %>
+            <%= '-' %>
           <% end %>
         </td>
         <td><%= transaction.description %></td>
         <td><%= transaction.location %></td>
         <td><%= l(transaction.created_at, format: :short) %></td>
         <td>
-          <%= link_to 'Show', transaction_path(transaction)%>
+          <%= link_to 'Show', transaction_path(transaction) %>
           <%= link_to 'Edit', edit_transaction_path(transaction) %>
           <%= button_to 'Delete', transaction_path(transaction), method: :delete, data: { confirm: 'Are you sure?' } %>
         </td>
@@ -82,8 +88,4 @@
 
 <%= paginate @transactions %> 
 
-<%= link_to "Home", root_path%>
-
-
-
-
+<%= link_to "Home", root_path %>

@@ -2,6 +2,7 @@
 
 class AccountsController < ApplicationController
   before_action :set_account, only: %i[show edit update destroy]
+  before_action :set_transactions, only: %i[show]
 
   def index
     @accounts = policy_scope(Account)
@@ -55,5 +56,9 @@ class AccountsController < ApplicationController
 
   def account_params
     params.require(:account).permit(:name, :account_number, :account_type, :balance)
+  end
+
+  def set_transactions
+    @transactions = Transaction.where(source_account_id: @account.id).or(Transaction.where(destination_account_id: @account.id)).page(params[:page]).per(10)
   end
 end

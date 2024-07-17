@@ -2,11 +2,13 @@
 
 class TransactionsController < ApplicationController
   before_action :set_transaction, only: %i[edit update destroy show]
-  before_action :set_accounts_and_categories, only: %i[new edit update create show]
+  before_action :set_accounts_and_categories, only: %i[new edit update create show index]
 
   def index
-    @transactions = policy_scope(FetchTransactionsService.new(current_user, params).call)
-    @accounts = current_user.accounts
+    params_for_filter_service = params.permit(:source_account_id, :destination_account_id, :type,
+                                              :category_id, :sort, :page)
+
+    @transactions = policy_scope(FetchTransactionsService.new(current_user, params_for_filter_service).call)
   end
 
   def edit

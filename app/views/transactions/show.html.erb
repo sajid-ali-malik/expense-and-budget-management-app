@@ -27,7 +27,11 @@
 </p>
 <p>
   <strong> Category </strong>
-  <%=@transaction.category%></p>
+   <% if @transaction.respond_to?(:category) && @transaction.category %>
+            <%= @transaction.category.name %>
+          <% else %>
+            <%= '-' %>
+          <% end %></p>
 <p>
   <strong>Description</strong>
   <%= @transaction.description%>

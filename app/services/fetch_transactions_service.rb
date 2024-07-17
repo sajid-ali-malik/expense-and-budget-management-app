@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class FetchTransactionsService
   def initialize(user, params)
     @user = user
@@ -7,33 +5,14 @@ class FetchTransactionsService
     @sort_order = params[:sort] || 'desc'
   end
 
-  # TODO: Refactor, try to reduce it by using where in the call
-  # TODO: ADD filter for category
-
   def call
-    transactions = @user.transactions.order(created_at: @sort_order).page(@params[:page]).per(20)
-    transactions = filter_by_source_account(transactions)
-    transactions = filter_by_destination_account(transactions)
-    filter_by_type(transactions)
-  end
+    filter_conditions = {
+      source_account_id: @params[:source_account_id].presence,
+      destination_account_id: @params[:destination_account_id].presence,
+      category_id: @params[:category_id].presence,
+      type: @params[:type].presence
+    }.compact
 
-  private
-
-  def filter_by_source_account(transactions)
-    return transactions unless @params[:source_account_id].present?
-
-    transactions.where(source_account_id: @params[:source_account_id])
-  end
-
-  def filter_by_destination_account(transactions)
-    return transactions unless @params[:destination_account_id].present?
-
-    transactions.where(destination_account_id: @params[:destination_account_id])
-  end
-
-  def filter_by_type(transactions)
-    return transactions unless @params[:type].present?
-
-    transactions.where(type: @params[:type])
+    @user.transactions.where(filter_conditions).order(created_at: @sort_order).page(@params[:page]).per(20)
   end
 end

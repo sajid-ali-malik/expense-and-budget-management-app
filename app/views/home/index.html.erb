@@ -47,20 +47,20 @@
           </tr>
         </thead>
         <tbody>
-          <% @budgets.each_with_index do |budget, index| %>
-            <tr>
-              <td><%= budget.category&.name %></td>
-              <td><%= budget.notes%></td>
-              <td><%= budget.amount %></td>
-              <td><%= @spent_amounts[index] %></td>
-              <td><%= budget.budget_month.strftime("%B %Y") %></td>
-              <td>
-                <%= link_to 'Show', budget_path(budget) %>
-                <%= link_to 'Edit', edit_budget_path(budget) %>
-                <%= button_to 'Delete', budget_path(budget), method: :delete, data: { confirm: 'Are you sure?' } %>
-              </td>
-            </tr>
-          <% end %>
+            <% @budgets.each_with_index do |budget, index| %>
+              <tr>
+                <td><%= budget.category.name %></td>
+                <td><%= budget.notes %></td>
+                <td><%= budget.amount %></td>
+                <td><%= @spent_amounts[index] %></td>
+                <td><%= budget.budget_month.strftime("%B %Y") %></td>
+                <td>
+                  <%= link_to 'Show', budget_path(budget) %>
+                  <%= link_to 'Edit', edit_budget_path(budget) %>
+                  <%= button_to 'Delete', budget_path(budget), method: :delete, data: { confirm: 'Are you sure?' } %>
+                </td>
+              </tr>
+            <% end %>
         </tbody>
       </table>
       <%= link_to "See All Budgets", budgets_path %>
