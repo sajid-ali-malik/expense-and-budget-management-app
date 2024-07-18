@@ -8,7 +8,6 @@ class AccountsController < ApplicationController
     @accounts = policy_scope(Account)
   end
 
-  # TODO: Display past month's transactions when showing the account.
   def show
     authorize @account
   end
@@ -59,6 +58,6 @@ class AccountsController < ApplicationController
   end
 
   def set_transactions
-    @transactions = Transaction.where(source_account_id: @account.id).or(Transaction.where(destination_account_id: @account.id)).page(params[:page]).per(10)
+    @transactions = @account.transactions.page(params[:page]).per(10)
   end
 end

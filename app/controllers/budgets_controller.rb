@@ -6,12 +6,10 @@ class BudgetsController < ApplicationController
 
   def index
     @budgets = policy_scope(current_user.budgets.includes(:category))
-    @spent_amounts = @budgets.map(&:spent_amount)
   end
 
   def show
     authorize @budget
-    @spent = @budget.spent_amount
   end
 
   def new

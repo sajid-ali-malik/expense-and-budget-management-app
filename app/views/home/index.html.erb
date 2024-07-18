@@ -47,12 +47,12 @@
           </tr>
         </thead>
         <tbody>
-            <% @budgets.each_with_index do |budget, index| %>
+            <% @budgets.each do |budget| %>
               <tr>
                 <td><%= budget.category.name %></td>
                 <td><%= budget.notes %></td>
                 <td><%= budget.amount %></td>
-                <td><%= @spent_amounts[index] %></td>
+                <td><%= budget.spent_amount %></td>
                 <td><%= budget.budget_month.strftime("%B %Y") %></td>
                 <td>
                   <%= link_to 'Show', budget_path(budget) %>
