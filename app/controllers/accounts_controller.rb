@@ -2,12 +2,12 @@
 
 class AccountsController < ApplicationController
   before_action :set_account, only: %i[show edit update destroy]
+  before_action :set_transactions, only: %i[show]
 
   def index
     @accounts = policy_scope(Account)
   end
 
-  # TODO: Display past month's transactions when showing the account.
   def show
     authorize @account
   end
@@ -55,5 +55,9 @@ class AccountsController < ApplicationController
 
   def account_params
     params.require(:account).permit(:name, :account_number, :account_type, :balance)
+  end
+
+  def set_transactions
+    @transactions = @account.transactions.page(params[:page]).per(10)
   end
 end

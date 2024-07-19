@@ -5,6 +5,12 @@
   <%= @account.name %>
 </p>
 
+
+<p>
+  <strong>Balance:</strong>
+  <%= @account.balance %>
+</p>
+
 <p>
   <strong>Account Number:</strong>
   <%= @account.account_number %>
@@ -16,4 +22,64 @@
 </p>
 
 <%= link_to 'Edit', edit_account_path(@account)%>
-<%= link_to 'Back', accounts_path %>
+<%= link_to 'See All Accounts', accounts_path %>
+
+<h2>Transactions</h2>
+
+<% if @transactions.present? %>
+  <table class="table table-striped mt-4">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>Source Account</th>
+        <th>Destination Account</th>
+        <th>Category</th>
+        <th>Description</th>
+        <th>Location</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @transactions.each do |transaction| %>
+        <tr>
+          <td><%= transaction.type.demodulize %></td>
+          <td><%= transaction.amount %></td>
+           <td>
+            <% if transaction.is_a?(Transactions::Expense) || transaction.is_a?(Transactions::Transfer) %>
+              <%= transaction.source_account&.name || "Null" %>
+            <% else %>
+              <%= '-' %>
+            <% end %>
+          </td>
+          <td>
+            <% if transaction.is_a?(Transactions::Income) || transaction.is_a?(Transactions::Transfer) %>
+              <%= transaction.destination_account&.name || "Null" %>
+            <% else %>
+              <%= '-' %>
+            <% end %>
+          </td>
+          <td>
+             <%if transaction.is_a?(Transactions::Expense)%>
+                <%= transaction.category.name %>
+            <%else%> 
+                <%= "-" %>
+            <%end%>
+          </td>
+          <td><%= transaction.description %></td>
+          <td><%= transaction.location %></td>
+          <td><%= l(transaction.created_at, format: :short) %></td>
+          <td>
+            <%= link_to 'Show', transaction_path(transaction) %>
+            <%= link_to 'Edit', edit_transaction_path(transaction) %>
+            <%= button_to 'Delete', transaction_path(transaction), method: :delete, data: { confirm: 'Are you sure?' } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= paginate @transactions %>
+<% else %>
+  <p>No transactions available for this account.</p>
+<% end %>
