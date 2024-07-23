@@ -72,6 +72,7 @@
 
 <div class="transactions">
   <h2>My Transactions</h2>
+  <% if @transactions.present? %>
   <table class="table table-striped mt-4">
     <thead>
       <tr>
@@ -125,4 +126,7 @@
     </tbody>
   </table>
   <%= link_to "See All Transactions", transactions_path %>
+  <%else%>
+  <p>No Transactions Found</p>
+  <%end%>
 </div>

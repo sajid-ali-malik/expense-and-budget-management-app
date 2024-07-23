@@ -6,6 +6,10 @@ ruby '3.2.0'
 
 gem 'kaminari'
 
+gem 'dotenv-rails', groups: [:development, :test]
+
+gem 'mailtrap'
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails', '~> 7.1.3', '>= 7.1.3.4'
 
@@ -76,3 +80,7 @@ end
 gem 'devise', '~> 4.9'
 
 gem 'pundit', '~> 2.3'
+
+gem "sidekiq", "~> 7.3"
+
+gem 'redis'
