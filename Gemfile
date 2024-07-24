@@ -6,7 +6,7 @@ ruby '3.2.0'
 
 gem 'kaminari'
 
-gem 'dotenv-rails', groups: [:development, :test]
+gem 'dotenv-rails', groups: %i[development test]
 
 gem 'mailtrap'
 
@@ -80,7 +80,5 @@ end
 gem 'devise', '~> 4.9'
 
 gem 'pundit', '~> 2.3'
-
-gem "sidekiq", "~> 7.3"
 
 gem 'redis'

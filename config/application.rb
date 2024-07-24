@@ -17,9 +17,19 @@ module ExpenseManagementApp
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
 
-    config.active_job.queue_adapter = :sidekiq
     config.autoload_lib(ignore: %w[assets tasks])
 
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+      user_name: ENV['MAILTRAP_USERNAME'],
+      password: ENV['MAILTRAP_PASSWORD'],
+      address: 'sandbox.smtp.mailtrap.io',
+      host: 'sandbox.smtp.mailtrap.io',
+      port: '2525',
+      authentication: :login
+    }
+
+    config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 
     # Configuration for the application, engines, and railties goes here.
     #
