@@ -6,6 +6,10 @@ ruby '3.2.0'
 
 gem 'kaminari'
 
+gem 'dotenv-rails', groups: %i[development test]
+
+gem 'mailtrap'
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails', '~> 7.1.3', '>= 7.1.3.4'
 
@@ -51,7 +55,12 @@ gem 'bootsnap', require: false
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  gem 'capybara'
+  gem 'database_cleaner-active_record'
   gem 'debug', platforms: %i[mri windows]
+  gem 'factory_bot_rails'
+  gem 'rspec-rails'
+  gem 'selenium-webdriver'
 end
 
 group :development do
@@ -67,12 +76,15 @@ group :development do
   # gem "spring"
 end
 
-group :test do
-  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem 'capybara'
-  gem 'selenium-webdriver'
-end
+# group :test do
+#   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+#   gem 'capybara'
+#   gem 'rspec'
+#   gem 'selenium-webdriver'
+# end
 
 gem 'devise', '~> 4.9'
 
 gem 'pundit', '~> 2.3'
+
+gem 'redis'
