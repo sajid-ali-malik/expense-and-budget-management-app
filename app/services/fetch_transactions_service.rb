@@ -6,7 +6,10 @@ class FetchTransactionsService
   end
 
   def call
-    @user.transactions.where(filter_conditions).order(created_at: @sort_order).page(@params[:page]).per(20)
+    Rails.logger.info 'FetchTransactionsService#call started'
+    transactions = @user.transactions.where(filter_conditions).order(created_at: @sort_order).page(@params[:page]).per(20)
+    Rails.logger.info 'FetchTransactionsService#call completed'
+    transactions
   end
 
   private
