@@ -1,38 +1,23 @@
 FactoryBot.define do
-  factory :account do
+  factory :transaction, class: 'Transaction' do
+    amount { 10 }
     user
-    name { 'Default Account' }
-    balance { 999 }
-    account_type { 'cash' }
-  end
 
-  FactoryBot.define do
-    factory :category do
-      name { 'Food' }
+    factory :expense_transaction, class: 'Transactions::Expense' do
+      type { 'Transactions::Expense' }
+      source_account { create(:account) }
+      category { create(:category) }
     end
-  end
 
-  FactoryBot.define do
-    factory :transaction, class: 'Transaction' do
-      amount { 10 }
-      user
+    factory :income_transaction, class: 'Transactions::Income' do
+      type { 'Transactions::Income' }
+      destination_account { create(:account) }
+    end
 
-      factory :expense_transaction, class: 'Transactions::Expense' do
-        type { 'Transactions::Expense' }
-        source_account { create(:account) }
-        category { create(:category) }
-      end
-
-      factory :income_transaction, class: 'Transactions::Income' do
-        type { 'Transactions::Income' }
-        destination_account { create(:account) }
-      end
-
-      factory :transfer_transaction, class: 'Transactions::Transfer' do
-        type { 'Transactions::Transfer' }
-        source_account { create(:account) }
-        destination_account { create(:account) }
-      end
+    factory :transfer_transaction, class: 'Transactions::Transfer' do
+      type { 'Transactions::Transfer' }
+      source_account { create(:account) }
+      destination_account { create(:account) }
     end
   end
 end
