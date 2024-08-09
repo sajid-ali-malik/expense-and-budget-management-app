@@ -16,7 +16,7 @@ class Budget < ApplicationRecord
 
   def unique_budget_per_month
     existing_budget = Budget.find_by(category:, budget_month:, user:)
-    return unless existing_budget
+    return unless existing_budget && existing_budget != self
 
     errors.add(:base, 'The budget already exists for this category and month. Please edit the existing budget.')
   end

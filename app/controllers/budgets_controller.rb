@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class BudgetsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_budget, only: %i[show edit update destroy]
   before_action :set_categories_and_months, only: %i[new create edit update]
 
@@ -42,7 +43,8 @@ class BudgetsController < ApplicationController
       redirect_to budgets_path, notice: 'Budget was successfully updated.'
     elsif @budget.errors[:base].include?('The budget already exists for this category and month. Please edit the existing budget.')
       existing_budget = current_user.budgets.find_by(category_id: budget_params[:category_id],
-                                                     budget_month: budget_params[:budget_month])
+                                                     budget_month: budget_params[:budget_month],
+                                                     amount: budget_params[:amount])
       redirect_to edit_budget_path(existing_budget),
                   alert: 'The budget already exists for this category and month. Please edit the existing budget.'
     else
