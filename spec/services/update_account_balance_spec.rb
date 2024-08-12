@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe UpdateAccountBalance do
-  let(:account1) { create(:account, balance: 1000) }
-  let(:account2) { create(:account, balance: 2000) }
+  let!(:account1) { create(:account, balance: 1000) }
+  let!(:account2) { create(:account, balance: 2000) }
 
   describe '#call' do
     context 'when the transaction is a transfer' do
@@ -10,8 +10,10 @@ RSpec.describe UpdateAccountBalance do
         create(:transfer_transaction, source_account: account1, destination_account: account2, amount: 100)
       end
 
-      it 'updates the account balances' do
-        described_class.new(transaction).call
+      subject(:update_account_balance) { described_class.new(transaction).call }
+
+      specify do
+        update_account_balance
         expect(account1.reload.balance).to eq(900)
         expect(account2.reload.balance).to eq(2100)
       end
@@ -20,8 +22,10 @@ RSpec.describe UpdateAccountBalance do
     context 'when the transaction is an income' do
       let(:transaction) { create(:income_transaction, destination_account: account2, amount: 200) }
 
-      it 'updates the account balances' do
-        described_class.new(transaction).call
+      subject(:update_account_balance) { described_class.new(transaction).call }
+
+      specify do
+        update_account_balance
         expect(account2.reload.balance).to eq(2200)
       end
     end
@@ -29,8 +33,10 @@ RSpec.describe UpdateAccountBalance do
     context 'when the transaction is an expense' do
       let(:transaction) { create(:expense_transaction, source_account: account1, amount: 300) }
 
-      it 'updates the account balances' do
-        described_class.new(transaction).call
+      subject(:update_account_balance) { described_class.new(transaction).call }
+
+      specify do
+        update_account_balance
         expect(account1.reload.balance).to eq(700)
       end
     end

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe FetchTransactionsService do
   subject { described_class.new(user, params).call }
 
-  let!(:user) { create(:user) }
+  let!(:user) { create(:user, confirmed_at: Time.current) }
   let(:params) { { sort: 'asc', page: 1 } }
 
   describe '#call' do
@@ -13,26 +13,26 @@ RSpec.describe FetchTransactionsService do
       let!(:category1) { create(:category) }
       let!(:category2) { create(:category) }
 
-      let!(:transaction1) do
+      let!(:expense_transaction) do
         create(:expense_transaction, user:, source_account: account1, created_at: 1.day.ago, category: category1)
       end
-      let!(:transaction2) do
+      let!(:income_transaction) do
         create(:income_transaction, user:, destination_account: account2, created_at: 2.days.ago)
       end
-      let!(:transaction3) do
+      let!(:transfer_transaction) do
         create(:transfer_transaction, user:, source_account: account1, destination_account: account2,
                                       created_at: 3.days.ago)
       end
 
       it 'returns transactions ordered by created_at ascending' do
-        expect(subject).to eq([transaction3, transaction2, transaction1])
+        expect(subject).to eq([transfer_transaction, income_transaction, expense_transaction])
       end
 
       context 'when sort param is specified as desc' do
         let(:params) { { sort: 'desc', page: 1 } }
 
         it 'returns transactions ordered by created_at descending' do
-          expect(subject).to eq([transaction1, transaction2, transaction3])
+          expect(subject).to eq([expense_transaction, income_transaction, transfer_transaction])
         end
       end
 
@@ -41,7 +41,7 @@ RSpec.describe FetchTransactionsService do
           let(:params) { { source_account_id: account1.id } }
 
           it 'returns filtered transactions' do
-            expect(subject).to contain_exactly(transaction1, transaction3)
+            expect(subject).to contain_exactly(expense_transaction, transfer_transaction)
           end
         end
 
@@ -49,7 +49,7 @@ RSpec.describe FetchTransactionsService do
           let(:params) { { destination_account_id: account2.id } }
 
           it 'returns filtered transactions' do
-            expect(subject).to contain_exactly(transaction2, transaction3)
+            expect(subject).to contain_exactly(income_transaction, transfer_transaction)
           end
         end
 
@@ -57,7 +57,7 @@ RSpec.describe FetchTransactionsService do
           let(:params) { { category_id: category1.id } }
 
           it 'returns filtered transactions' do
-            expect(subject).to contain_exactly(transaction1)
+            expect(subject).to contain_exactly(expense_transaction)
           end
         end
 
@@ -65,7 +65,7 @@ RSpec.describe FetchTransactionsService do
           let(:params) { { type: 'Transactions::Income' } }
 
           it 'returns filtered transactions' do
-            expect(subject).to contain_exactly(transaction2)
+            expect(subject).to contain_exactly(income_transaction)
           end
         end
       end
